@@ -20,7 +20,7 @@ const RegisterPatient = () => {
     Gender: '',
     DateOfBirth: '',
   });
-
+  
 
   // Handle form field changes
   const handleInputChange = (e) => {
@@ -44,9 +44,9 @@ const RegisterPatient = () => {
         }
         return convertedData;
       };
-
+      
       // Usage
-      const response = await fetch('https://localhost:7190/CreatePatient', {
+      const response = await fetch('https://localhost:7207/api/Patient/CreatePatient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -82,7 +82,7 @@ const RegisterPatient = () => {
 
   return (
     <div className="container">
-      <div className="card mt-4">
+      <div className="card mt-4 bg-light p-4 rounded">
         <RegistrationLinks />
         <div className="card-body " style={{ marginTop: '10%' }}>
           <form onSubmit={handleSubmit}>
@@ -177,7 +177,7 @@ const RegisterPatient = () => {
               required
             />
 
-            <label className="form-label">Gender</label>
+            <label className="form-label">Gender</label><br></br>
             <div className="btn-group" role="group">
               <input
                 type="radio"
@@ -207,14 +207,14 @@ const RegisterPatient = () => {
                 Female
               </label>
             </div>
-
+<br></br>
             <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
             <input type="date" className="form-input" id="dateOfBirth" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} required />
 
             <div className="d-flex justify-content-end mt-3">
-              <button type="submit" className="btn btn-submit">
-                Submit
-              </button>
+            <button type="submit" className="btn btn-primary w-100">
+              Submit
+            </button>
             </div>
           </form>
         </div>
