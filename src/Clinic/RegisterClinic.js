@@ -42,7 +42,7 @@ const RegisterClinic = () => {
         return convertedData;
       };
 
-      const response = await fetch('https://localhost:7190/api/Clinic/CreateClinic', {
+      const response = await fetch('http://localhost:5179/api/Clinic/CreateClinic', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

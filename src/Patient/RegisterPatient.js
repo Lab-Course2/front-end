@@ -46,7 +46,7 @@ const RegisterPatient = () => {
       };
       
       // Usage
-      const response = await fetch('https://localhost:7207/api/Patient/CreatePatient', {
+      const response = await fetch('http://localhost:5179/api/Patient/CreatePatient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

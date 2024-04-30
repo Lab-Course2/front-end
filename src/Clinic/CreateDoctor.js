@@ -26,7 +26,7 @@ const CreateDoctor = () => {
 
   const fetchDoctors = async () => {
     try {
-      const response = await fetch('https://localhost:7207/api/Doctor/GetAllDoctors');
+      const response = await fetch('http://localhost:5179/api/Doctor/GetAllDoctors');
       if (response.ok) {
         const data = await response.json();
         setDoctors(data);
@@ -50,7 +50,7 @@ const CreateDoctor = () => {
     try {
         console.log('Creating Doctor:', newDoctor);
 
-      const response = await fetch('https://localhost:7207/api/Doctor/CreateDoctor', {
+      const response = await fetch('http://localhost:5179/api/Doctor/CreateDoctor', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ const CreateDoctor = () => {
 
   const handleDeleteDoctor = async (doctorId) => {
     try {
-      const response = await fetch(`https://localhost:7207/api/DoctorDelete/${doctorId}`, {
+      const response = await fetch(`http://localhost:5179/api/DoctorDelete/${doctorId}`, {
         method: 'DELETE',
       });
 
