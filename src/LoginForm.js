@@ -24,7 +24,7 @@ const LoginForm = ({handleLogin}) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5179/api/Authentication/SignIn', {
+      const response = await fetch('https://localhost:7190/api/Authentication/SignIn', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ const LoginForm = ({handleLogin}) => {
         if(emailConfirmation === "False"){
           setShowEmailConfirmationMessage(true); 
            console.log("False");
-
+           setLoginFailed(false);
         }else{
           setShowEmailConfirmationMessage(false); 
 

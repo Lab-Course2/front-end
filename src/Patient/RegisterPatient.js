@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link , useNavigate} from 'react-router-dom';
 import '../Css/Register.css';
@@ -46,7 +47,7 @@ const RegisterPatient = () => {
       };
       
       // Usage
-      const response = await fetch('http://localhost:5179/api/Patient/CreatePatient', {
+      const response = await fetch('https://localhost:7190/api/Patient/CreatePatient', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -150,6 +151,18 @@ const RegisterPatient = () => {
               onChange={handleInputChange}
               required
             />
+            <label htmlFor="address" className="form-label">
+              Address
+            </label>
+            <input
+              type="text"
+              className="form-input"
+              id="address"
+              name="address"
+              value={formData.address}
+              onChange={handleInputChange}
+              required
+            />
 
             <label htmlFor="personalNumber" className="form-label">
               Personal Number
@@ -207,7 +220,8 @@ const RegisterPatient = () => {
                 Female
               </label>
             </div>
-<br></br>
+            <br/>
+
             <label htmlFor="dateOfBirth" className="form-label">Date of Birth</label>
             <input type="date" className="form-input" id="dateOfBirth" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} required />
 
