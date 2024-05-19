@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Link } from 'react-router-dom';
@@ -47,7 +46,7 @@ const DoctorList = ({ userId }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://localhost:7190/api/Doctor/DeleteDoctor?doctorId=${id}`, {
+      const response = await fetch(`https://localhost:7207/api/Doctor/DeleteDoctor?doctorId=${id}`, {
         method: 'DELETE',
       });
 

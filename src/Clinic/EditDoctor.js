@@ -57,7 +57,7 @@ const EditDoctor = ({ match }) => {
   const handleUpdateDoctor = async () => {
     try {
       console.log('Updating Doctor:', existingDoctor);
-  
+
       const response = await fetch(`https://localhost:7190/api/Doctor/UpdateDoctor/${id}`, {
         method: 'PUT',
         headers: {
@@ -65,7 +65,7 @@ const EditDoctor = ({ match }) => {
         },
         body: JSON.stringify(existingDoctor),
       });
-  
+
       if (response.ok) {
         const updatedData = await response.json();
         window.location.href = '/doctor-list';
@@ -79,7 +79,7 @@ const EditDoctor = ({ match }) => {
       console.error('Error during update:', error);
     }
   };
-  
+
   return (
     <div className="create-doctor-container" style={{marginTop:'5%', marginLeft:'25%'}}>
        <div className="col-md-3" style={{ width: '25%' }}>

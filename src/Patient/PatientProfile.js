@@ -26,7 +26,7 @@ function PatientProfile({ userId })
         {
             try
             {
-                const response = await fetch(`http://localhost:5179/api/Patient/GetPatientById/?patientId=${userId}`, {
+                const response = await fetch(`http://localhost:7190/api/Patient/GetPatientById/?patientId=${userId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

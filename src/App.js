@@ -8,6 +8,7 @@ import ClinicDashboard from './Clinic/ClinicDashboard';
 import CreateDoctor from './Clinic/CreateDoctor';
 import DoctorList from './Clinic/DoctorList';
 import EditDoctor from './Clinic/EditDoctor';
+import ProtectedRoute from './ProtectedRoute';
 import Home from './Home';
 import { createBrowserHistory } from 'history';
 import { useNavigate } from 'react-router-dom';

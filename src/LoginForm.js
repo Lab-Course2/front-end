@@ -44,7 +44,7 @@ const LoginForm = ({handleLogin}) => {
         if(emailConfirmation === "False"){
           setShowEmailConfirmationMessage(true); 
            console.log("False");
-           setLoginFailed(false);
+
         }else{
           setShowEmailConfirmationMessage(false); 
 
