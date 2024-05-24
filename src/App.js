@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
+import { Stack } from 'react-bootstrap';
 import Navbar from './Navbar';
 import RegisterPatient from './Patient/RegisterPatient';
 import RegisterClinic from './Clinic/RegisterClinic';
@@ -8,19 +14,16 @@ import ClinicDashboard from './Clinic/ClinicDashboard';
 import CreateDoctor from './Clinic/CreateDoctor';
 import DoctorList from './Clinic/DoctorList';
 import EditDoctor from './Clinic/EditDoctor';
-import ProtectedRoute from './ProtectedRoute';
-import Home from './Home';
-import { createBrowserHistory } from 'history';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from './Sidebar';
 import ClinicProfile from './Clinic/ClinicProfile';
+import PatientDashboard from './Patient/PatientDashboard';
+import PatientProfile from './Patient/PatientProfile';
+import Homepage from './Homepage';
+import Footer from './Footer';
+import ResetPassword from './ResetPasswordComponent';
+import { createBrowserHistory } from 'history';
 
-const PrivateRoute = ({ element: Element, isLoggedIn, userId, token, ...rest }) => (
-  <Route
-    {...rest}
-    render={props => isLoggedIn ? <Element userId={userId} token={token} {...props} /> : <Navigate to="/" />}
-  />
-);
+const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) =>
+  isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to='/' />;
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -28,7 +31,6 @@ const App = () => {
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState('');
   const history = createBrowserHistory();
-  
   const handleLogin = (role, token, userId) => {
     setIsLoggedIn(true);
     setUserRole(role);
@@ -36,7 +38,13 @@ const App = () => {
     setUserId(userId);
     const userData = { isLoggedIn: true, userRole: role, token, userId };
     sessionStorage.setItem('userData', JSON.stringify(userData));
-    history.push('/clinic-dashboard');
+
+    if (role === 'Patient') {
+      history.push('/patient-dashboard');
+    } else if (role === 'Clinic') {
+      history.push('/clinic-dashboard');
+    }
+    window.location.reload();
   };
 
   const handleLogout = () => {
@@ -44,99 +52,76 @@ const App = () => {
     setUserRole('');
     setUserId('');
     sessionStorage.removeItem('userData');
+    history.push('/login');
     window.location.reload();
   };
 
   useEffect(() => {
     const storedUserData = sessionStorage.getItem('userData');
     if (storedUserData) {
-      const { isLoggedIn, userRole, token, userId } = JSON.parse(storedUserData);
+      const { isLoggedIn, userRole, token, userId } =
+        JSON.parse(storedUserData);
       setIsLoggedIn(isLoggedIn);
       setUserRole(userRole);
       setToken(token);
       setUserId(userId);
+      if (!isLoggedIn) {
+        history.push('/home');
+      }
     }
   }, []);
 
   return (
-    <Router history={history}>
-      <div>
-        <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
-        <div className="container-fluid">
-          <div className="row">
-            <div className="col-md-3">
-              {history.location.pathname === '/clinic-dashboard' && (
-                <Sidebar />
-              )}
-            </div>
-            
-              <Routes> 
-              <Route path="/home" element={<Home />} /> 
-                {isLoggedIn ? (
-                  <>
-                   
-                    <Route
-                      path="/clinic-dashboard"
-                      element={<ClinicDashboard />}
-                      isLoggedIn={isLoggedIn}
-                      userId={userId}
-                      token={token}
-                    />
-                    <Route
-                      path="/doctor-list"
-                      element={<DoctorList userId={userId} />}
-                      isLoggedIn={isLoggedIn}
-                      userId={userId}
-                      token={token}
-                    />
-                    <Route
-                      path="/create-doctor"
-                      element={<CreateDoctor userId={userId} />}
-                      isLoggedIn={isLoggedIn}
-                      userId={userId}
-                      token={token}
-                    />
-                    <Route
-                      path="/edit-doctor/:id"
-                      element={<EditDoctor />}
-                      isLoggedIn={isLoggedIn}
-                      userId={userId}
-                      token={token}
-                    />
-                     <Route
-                      path="/clinic-profile"
-                      element={<ClinicProfile userId={userId}/>}
-                      isLoggedIn={isLoggedIn}
-                      userId={userId}
-                      token={token}
-                    />
-                    {/* Add other logged-in user routes here */}
-                  </>
-                ) : (
-                  <>
-                    <Route
-                      path="/login"
-                      element={<LoginForm handleLogin={handleLogin} />}
-                    />
-                    <Route
-                      path="/register-patient"
-                      element={<RegisterPatient />}
-                    />
-                    <Route
-                      path="/register-clinic"
-                      element={<RegisterClinic />}
-                    />
-                    {/* Add other routes for non-logged-in users here */}
-                  </>
-                )}
-                {/* Redirect to home if trying to access login while logged in */}
-                {isLoggedIn && <Route path="/login" element={<Navigate to="/home" />} />}
-                {isLoggedIn && <Route path="/register-patient" element={<Navigate to="/home" />} />}
-              </Routes>
-            </div>
-          </div>
-        </div> 
-    </Router>
+    <Stack direction='vertical'>
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
+      <Router history={history}>
+        <Routes>
+          {isLoggedIn ? (
+            <>
+              <Route path='/clinic-dashboard' element={<ClinicDashboard />} />
+              <Route path='/patient-dashboard' element={<PatientDashboard />} />
+              <Route
+                path='/doctor-list'
+                element={<DoctorList userId={userId} />}
+              />
+              <Route
+                path='/create-doctor'
+                element={<CreateDoctor userId={userId} />}
+              />
+              <Route path='/edit-doctor/:id' element={<EditDoctor />} />
+              <Route
+                path='/clinic-profile'
+                element={<ClinicProfile userId={userId} />}
+              />
+              <Route
+                path='/patient-profile'
+                element={<PatientProfile userId={userId} />}
+              />
+            </>
+          ) : (
+            <>
+              <Route
+                path='/login'
+                element={<LoginForm handleLogin={handleLogin} />}
+              />
+              <Route path='/register-patient' element={<RegisterPatient />} />
+              <Route path='/register-clinic' element={<RegisterClinic />} />
+              <Route path='/home' element={<Homepage />} />
+              <Route
+                path='/reset-password/:token'
+                element={<ResetPassword />}
+              />
+            </>
+          )}
+        </Routes>
+      </Router>
+      <div
+        className='static-content'
+        style={{ width: '100%', overflowX: 'hidden' }}
+      >
+        <Footer />
+      </div>
+    </Stack>
   );
 };
 

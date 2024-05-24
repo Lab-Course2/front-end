@@ -11,12 +11,16 @@ const DoctorList = ({ userId }) => {
     const fetchData = async () => {
       try {
         // Fetch doctors
-        const doctorsResponse = await fetch('https://localhost:7190/api/Doctor/GetAllDoctors');
+        const doctorsResponse = await fetch(
+          'https://localhost:7207/api/Doctor/GetAllDoctors'
+        );
         if (doctorsResponse.ok) {
           const doctorsData = await doctorsResponse.json();
 
           // Filter doctors based on ClinicId matching userId
-          const filteredDoctors = doctorsData.filter((doctor) => doctor.clinicId === userId);
+          const filteredDoctors = doctorsData.filter(
+            (doctor) => doctor.clinicId === userId
+          );
 
           setDoctors(filteredDoctors);
         } else {
@@ -24,7 +28,9 @@ const DoctorList = ({ userId }) => {
         }
 
         // Fetch clinics
-        const clinicsResponse = await fetch('https://localhost:7190/api/Clinic/GetAllClinics');
+        const clinicsResponse = await fetch(
+          'https://localhost:7207/api/Clinic/GetAllClinics'
+        );
         if (clinicsResponse.ok) {
           const clinicsData = await clinicsResponse.json();
           setClinics(clinicsData);
@@ -46,9 +52,12 @@ const DoctorList = ({ userId }) => {
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`https://localhost:7207/api/Doctor/DeleteDoctor?doctorId=${id}`, {
-        method: 'DELETE',
-      });
+      const response = await fetch(
+        `https://localhost:7207/api/Doctor/DeleteDoctor?doctorId=${id}`,
+        {
+          method: 'DELETE',
+        }
+      );
 
       if (response.ok) {
         setDoctors(doctors.filter((doctor) => doctor.id !== id));
@@ -67,21 +76,22 @@ const DoctorList = ({ userId }) => {
   };
 
   return (
-    <div className="container mt-4">
-      <div className="row">
-        <div className="col-md-3" style={{ width: '25%' }}>
-          <Sidebar />
+    <div className='container mt-4'>
+      <div className='row'>
+        <div className='col-md-3' style={{ width: '25%' }}>
+          <Sidebar userRole='Clinic' />
         </div>
-        <div className="col-md-9" style={{ marginLeft:'auto', width: '75%', marginTop:'35%'}}>
+        <div className='col-md-9' style={{ marginLeft: 'auto', width: '75%' }}>
           <h2>Doctors List</h2>
-          <Link to="/create-doctor" className="btn btn-primary mb-3">
+          <Link to='/create-doctor' className='btn btn-primary mb-3'>
             Create Doctor
           </Link>
-          <table className="table table-striped">
+          <table className='table table-striped'>
             <thead>
               <tr>
                 <th>Username</th>
                 <th>Name</th>
+                <th>Surname</th>
                 <th>Specialisation</th>
                 <th>Email</th>
                 <th>Phone Number</th>
@@ -97,6 +107,7 @@ const DoctorList = ({ userId }) => {
                 <tr key={doctor.id}>
                   <td>{doctor.userName}</td>
                   <td>{doctor.name}</td>
+                  <td>{doctor.surname}</td>
                   <td>{doctor.specialisation}</td>
                   <td>{doctor.email}</td>
                   <td>{doctor.phoneNumber}</td>
@@ -105,10 +116,16 @@ const DoctorList = ({ userId }) => {
                   <td>{doctor.address}</td>
                   <td>{getClinicName(doctor.clinicId)}</td>
                   <td>
-                    <Link to={`/edit-doctor/${doctor.id}`} className="btn btn-primary ml-2">
+                    <Link
+                      to={`/edit-doctor/${doctor.id}`}
+                      className='btn btn-primary ml-2'
+                    >
                       Edit
                     </Link>
-                    <button className="btn btn-danger" onClick={() => handleDelete(doctor.id)}>
+                    <button
+                      className='btn btn-danger'
+                      onClick={() => handleDelete(doctor.id)}
+                    >
                       Delete
                     </button>
                   </td>

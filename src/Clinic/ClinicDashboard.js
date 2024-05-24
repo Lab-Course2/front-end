@@ -4,8 +4,8 @@ import Sidebar from '../Sidebar';
 
 const ClinicDashboard = () => {
   return (
-    <div className="dashboard-container">
-      <Sidebar />
+    <div className='dashboard-container'>
+      <Sidebar userRole='Clinic' />
     </div>
   );
 };
