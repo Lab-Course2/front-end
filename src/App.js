@@ -19,6 +19,7 @@ import { createBrowserHistory } from 'history';
 import SearchList from './Search';
 import UserProfileCard from './DoctorProfileView';
 import UnauthorizedPage from './UnauthorizedPage';
+import ProfileSettings from './Patient/PatientProfileSettings';
 
 const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) => (
   isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to="/" />
@@ -114,6 +115,8 @@ const history = createBrowserHistory();
 
             </>
           )}
+            <Route path="/test-t" element={<ProfileSettings />} />
+
             <Route path="/*" element={isLoggedIn ? <Navigate to="/home" /> : <UnauthorizedPage />} />
         </Routes>
 
