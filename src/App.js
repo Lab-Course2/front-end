@@ -12,14 +12,13 @@ import EditDoctor from './Clinic/EditDoctor';
 import ClinicProfile from './Clinic/ClinicProfile';
 import PatientDashboard from './Patient/PatientDashboard';
 import PatientProfile from './Patient/PatientProfile';
-import VisitProfile from './Patient/VisitProfile'; 
 import Homepage from './Homepage';
 import Footer from './Footer';
 import ResetPassword from './ResetPasswordComponent';
 import { createBrowserHistory } from 'history';
 import SearchList from './Search';
-import DoctorProfile from './Patient/DoctorProfile'; 
-
+import UserProfileCard from './DoctorProfileView';
+import UnauthorizedPage from './UnauthorizedPage';
 
 const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) => (
   isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to="/" />
@@ -70,11 +69,6 @@ const history = createBrowserHistory();
       setUserRole(userRole);
       setToken(token);
       setUserId(userId);
-      if(!isLoggedIn){
-        history.push('/home');
-    window.location.reload();
-
-      }
     }
   }, []);
 ;
@@ -93,21 +87,18 @@ const history = createBrowserHistory();
               <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
               <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
               <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
-              
             </>
           )}
           {userRole === "Patient" && (
             <>
-            
               <Route path="/patient-dashboard" element={<PatientDashboard />} />
               <Route path="/patient-profile" element={<PatientProfile userId={userId} />} />
               <Route path="/search-list" element={<SearchList />} />
-              <Route path="*" element={<Navigate to="/" />} />
-
+              
             </>
           )}
-            <Route path="/doctor-profile/:id" element={<DoctorProfile />} />
-             <Route path="/visit-profile/:id" element={<VisitProfile />} />
+              <Route path="/profile-card/:userId" element={<UserProfileCard />} />
+              
 
             </>
           ) : (
@@ -118,9 +109,14 @@ const history = createBrowserHistory();
               <Route path="/home" element={<Homepage />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route element={<Navigate to="/login" />} />
+              <Route path="/" element={<Navigate to="/home" />} />
+              <Route path="/unauthorized" element={<UnauthorizedPage />} />
+
             </>
           )}
+            <Route path="/*" element={isLoggedIn ? <Navigate to="/home" /> : <UnauthorizedPage />} />
         </Routes>
+
       </Router>
       <div className="static-content" style={{ width: '100%', overflowX: 'hidden' }}>
         <Footer />

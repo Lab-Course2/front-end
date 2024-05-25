@@ -21,7 +21,6 @@ const Navbar = ({ isLoggedIn, handleLogout }) =>
           {isLoggedIn ? (
             <NavDropdown title="My Profile" id="basic-nav-dropdown">
               <NavDropdown.Item href="/profile" style={{ color: '#ffffff' }}>Profile</NavDropdown.Item>
-              <NavDropdown.Item href="/patient-dashboard" style={{ color: '#ffffff' }}>Dashboard</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={handleLogout} style={{ color: '#ffffff' }}>Log Out</NavDropdown.Item>
             </NavDropdown>
