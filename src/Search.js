@@ -119,7 +119,7 @@ const SearchList = () => {
   const handleSearch = async (clinicType, location, clinicName) => {
     try {
       setLoading(true);
-      const response = await fetch(`https://localhost:7207/api/Search/SearchAppointment?SearchTerm=${clinicName}&Location=${location}&Category=${clinicType}&SearchType=Doctor`, {
+      const response = await fetch(`https://localhost:7190/api/Search/SearchAppointment?SearchTerm=${clinicName}&Location=${location}&Category=${clinicType}&SearchType=Doctor`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -147,13 +147,13 @@ const SearchList = () => {
 const fetchDoctors = async () => {
     try {
       setLoading(true);
-        const response = await fetch('https://localhost:7207/api/Search/FetchAllDoctors'); 
+        const response = await fetch('https://localhost:7190/api/Search/FetchAllDoctors'); 
         if (!response.ok) {
             throw new Error('Failed to fetch doctors');
         }
         const data = await response.json();
         setDoctors(data); 
-       setLoading(false);
+      setLoading(false);
     } catch (error) {
       setLoading(false);
         console.error('Error fetching doctors:', error);
@@ -189,6 +189,7 @@ const fetchDoctors = async () => {
             ))
           )}
          
+          {/* Butoni për të ngarkuar më shumë mjekë */}
           
         </div>
       </div>
