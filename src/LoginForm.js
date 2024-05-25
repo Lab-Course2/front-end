@@ -34,7 +34,7 @@ const LoginForm = ({ handleLogin }) => {
 
     try {
       const response = await fetch(
-        'https://localhost:7207/api/Authentication/SignIn',
+        'https://localhost:7190/api/Authentication/SignIn',
         {
           method: 'POST',
           headers: {
@@ -102,7 +102,7 @@ const LoginForm = ({ handleLogin }) => {
     //
     if (forgotPasswordEmail !== null) {
       const response = await fetch(
-        `https://localhost:7207/api/Authentication/ForgetPassword?email=${forgotPasswordEmail}`,
+        `https://localhost:7190/api/Authentication/ForgetPassword?email=${forgotPasswordEmail}`,
         {
           method: 'POST',
           headers: {
