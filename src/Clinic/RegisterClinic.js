@@ -43,7 +43,7 @@ const RegisterClinic = () => {
       };
 
       const response = await fetch(
-        'https://localhost:7207/api/Clinic/CreateClinic',
+        'https://localhost:7190/api/Clinic/CreateClinic',
         {
           method: 'POST',
           headers: {

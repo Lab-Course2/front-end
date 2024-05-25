@@ -12,11 +12,14 @@ import EditDoctor from './Clinic/EditDoctor';
 import ClinicProfile from './Clinic/ClinicProfile';
 import PatientDashboard from './Patient/PatientDashboard';
 import PatientProfile from './Patient/PatientProfile';
+import VisitProfile from './Patient/VisitProfile'; 
 import Homepage from './Homepage';
 import Footer from './Footer';
 import ResetPassword from './ResetPasswordComponent';
 import { createBrowserHistory } from 'history';
 import SearchList from './Search';
+import DoctorProfile from './Patient/DoctorProfile'; 
+
 
 const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) => (
   isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to="/" />
@@ -90,16 +93,21 @@ const history = createBrowserHistory();
               <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
               <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
               <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
+              
             </>
           )}
           {userRole === "Patient" && (
             <>
+            
               <Route path="/patient-dashboard" element={<PatientDashboard />} />
               <Route path="/patient-profile" element={<PatientProfile userId={userId} />} />
               <Route path="/search-list" element={<SearchList />} />
+              <Route path="*" element={<Navigate to="/" />} />
+
             </>
           )}
-              
+            <Route path="/doctor-profile/:id" element={<DoctorProfile />} />
+             <Route path="/visit-profile/:id" element={<VisitProfile />} />
 
             </>
           ) : (

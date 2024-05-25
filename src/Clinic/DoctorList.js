@@ -12,7 +12,7 @@ const DoctorList = ({ userId }) => {
       try {
         // Fetch doctors
         const doctorsResponse = await fetch(
-          'https://localhost:7207/api/Doctor/GetAllDoctors'
+          'https://localhost:7190/api/Doctor/GetAllDoctors'
         );
         if (doctorsResponse.ok) {
           const doctorsData = await doctorsResponse.json();
@@ -29,7 +29,7 @@ const DoctorList = ({ userId }) => {
 
         // Fetch clinics
         const clinicsResponse = await fetch(
-          'https://localhost:7207/api/Clinic/GetAllClinics'
+          'https://localhost:7190/api/Clinic/GetAllClinics'
         );
         if (clinicsResponse.ok) {
           const clinicsData = await clinicsResponse.json();
@@ -53,7 +53,7 @@ const DoctorList = ({ userId }) => {
   const handleDelete = async (id) => {
     try {
       const response = await fetch(
-        `https://localhost:7207/api/Doctor/DeleteDoctor?doctorId=${id}`,
+        `https://localhost:7190/api/Doctor/DeleteDoctor?doctorId=${id}`,
         {
           method: 'DELETE',
         }

@@ -28,7 +28,7 @@ const CreateDoctor = (userId) => {
   const fetchDoctors = async () => {
     try {
       const response = await fetch(
-        'https://localhost:7207/api/Doctor/GetAllDoctors'
+        'https://localhost:7190/api/Doctor/GetAllDoctors'
       );
       if (response.ok) {
         const data = await response.json();
@@ -52,7 +52,7 @@ const CreateDoctor = (userId) => {
   const handleCreateDoctor = async () => {
     try {
       const response = await fetch(
-        'https://localhost:7207/api/Doctor/CreateDoctor',
+        'https://localhost:7190/api/Doctor/CreateDoctor',
         {
           method: 'POST',
           headers: {
