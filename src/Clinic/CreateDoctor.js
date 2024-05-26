@@ -19,6 +19,7 @@ const CreateDoctor = (userId) =>
     specialisation: '',
     gender: '',
     address: '',
+    description: '',
     clinicId: actualUserId,
   });
 
@@ -83,6 +84,7 @@ const CreateDoctor = (userId) =>
           specialisation: '',
           gender: '',
           address: '',
+          description:'',
           photoData: '',
           photoFormat: '',
           clinicId: actualUserId,
@@ -198,6 +200,10 @@ const CreateDoctor = (userId) =>
             <div className="form-group">
               <label htmlFor="address">Address:</label>
               <input type="text" id="address" name="address" value={newDoctor.address} onChange={handleInputChange} />
+            </div>
+            <div className="form-group">
+              <label htmlFor="description">Description:</label>
+              <textarea id="description" name="description" value={newDoctor.description} onChange={handleInputChange}></textarea>
             </div>
             <div className="form-group">
               <label htmlFor="photo">Photo:</label>

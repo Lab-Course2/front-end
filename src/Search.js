@@ -92,10 +92,10 @@ const DoctorWidget = ({ doctor }) => {
       </div>
         <div className="col-md-8">
           <div className="card-body">
-            <h5 className="card-title">{doctor.doctorName}</h5>
-        <h6 className="card-title">Clinic: {doctor.clinicName}</h6>
-            <p className="card-text">Specialization: {doctor.specialisation}</p>
-            <p className="card-text">Job: {doctor.job}</p>
+            <h5 className="card-title">{doctor.doctorName} </h5>
+        {/* <h6 className="card-title">{doctor.clinicName}</h6> */}
+            <p className="card-text">{doctor.specialisation}</p>
+            <p className="card-text">{doctor.job}</p>
             <p className="card-text">
               <span role="img" aria-label="Location">📍</span> {doctor.clinicLocation}
             </p>
