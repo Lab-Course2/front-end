@@ -1,21 +1,22 @@
-
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-
+import MessageComponent from '../Messages/MessageComponent'; // Import MessageComponent
 
 const AppointmentSlotCreate = (userId) => {
-const UserId = userId.userId;
-const [formData, setFormData] = useState({
+  const UserId = userId.userId;
+  const [formData, setFormData] = useState({
     DoctorId: '',
     ClinicId: UserId,
     StartTime: '',
     EndTime: '',
     IsBooked: false,
+    IsAccepted: false,
     Date: '', // Add Date field
     PatientId: null,
-});
-const [doctors, setDoctors] = useState([]);
+  });
+  const [doctors, setDoctors] = useState([]);
+  const [errorMessage, setErrorMessage] = useState(null); // State for error message
 
   useEffect(() => {
     const fetchDoctors = async () => {
@@ -34,6 +35,7 @@ const [doctors, setDoctors] = useState([]);
 
     fetchDoctors();
   }, [userId]);
+
   const convertTo24HourFormat = (time12h) => {
     const [time, modifier] = time12h.split(' ');
 
@@ -68,7 +70,7 @@ const [doctors, setDoctors] = useState([]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    
     try {
       const response = await fetch('https://localhost:5179/api/AppointmentSlot', {
         method: 'POST',
@@ -77,38 +79,34 @@ const [doctors, setDoctors] = useState([]);
         },
         body: JSON.stringify(formData),
       });
-
       if (response.ok) {
-        console.log('Appointment Slot created successfully!');
-        console.log(JSON.stringify(formData));
-        window.location.href = '/appointment-slot-list';
-        // Add any success handling logic here
-      } else {
-        const errorData = await response.json();
-        console.log(JSON.stringify(formData));
-
-        console.error('Failed to create Appointment Slot:', errorData);
-
-        // Log detailed validation errors, if available
-        if (errorData.errors) {
-          Object.keys(errorData.errors).forEach((key) => {
-            console.error(`${key}: ${errorData.errors[key].join(', ')}`);
-          });
+        const responseData = await response.json();
+        if (responseData.succeeded === true) {
+          console.log('Operation succeeded: true');
+          setErrorMessage(responseData);
+          console.log(responseData);
+          window.location.href='/appointment-slot-list';
+        } else {
+          console.log('Operation succeeded: false');
+          setErrorMessage(responseData);
+          console.log(responseData);
         }
-
-        // Add error handling logic here
+      } else {
+        // Handle HTTP errors (status codes other than 200-299)
+        console.error('Failed to create Appointment Slot:', response.statusText);
       }
     } catch (error) {
       console.error('Error creating Appointment Slot:', error);
-      // Handle other types of errors (e.g., network issues)
     }
   };
-
+  
   return (
     <Container>
       <h2>Add Appointment Slot</h2>
+      {errorMessage && <MessageComponent message={errorMessage} />}
+
       <Form onSubmit={handleSubmit}>
-      <Form.Group controlId="DoctorId">
+        <Form.Group controlId="DoctorId">
           <Form.Label>Doctor</Form.Label>
           <Form.Control
             as="select"
@@ -140,16 +138,6 @@ const [doctors, setDoctors] = useState([]);
             type="time"
             name="EndTime"
             value={formData.EndTime}
-            onChange={handleChange}
-          />
-        </Form.Group>
-
-        <Form.Group controlId="IsBooked">
-          <Form.Check
-            type="checkbox"
-            label="Is Booked"
-            name="IsBooked"
-            checked={formData.IsBooked}
             onChange={handleChange}
           />
         </Form.Group>

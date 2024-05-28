@@ -38,9 +38,9 @@ const Sidebar = ({ userRole }) => {
                     <i className="bi bi-house fs-4 me-2"></i>
                     <span>Dashboard</span>
                 </Link>
-                <Link to="/appointments" className={`list-group-item py-2 ${location.pathname === '/appointments' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+                <Link to="/appointment-slot-list" className={`list-group-item py-2 ${location.pathname === '/appointment-slot-list' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
                     <i className="bi bi-house fs-4 me-2"></i>
-                    <span>Appointments</span>
+                    <span>Appointment Slot Lists</span>
                 </Link>
                 <Link to="/consultations" className={`list-group-item py-2 ${location.pathname === '/consultations' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
                     <i className="bi bi-house fs-4 me-2"></i>
@@ -69,7 +69,11 @@ const Sidebar = ({ userRole }) => {
                 </Link>
             <Link to="/search-list" className={`list-group-item py-2 ${location.pathname === '/search-list' ? 'active' : ''}`}>
               <i className="bi bi-house fs-4 me-2"></i>
-              <span>Appointments</span>
+              <span>Search for Doctor Appointments</span>
+            </Link>
+            <Link to="/my-patient-appointments" className={`list-group-item py-2 ${location.pathname === '/my-patient-appointments' ? 'active' : ''}`}>
+              <i className="bi bi-house fs-4 me-2"></i>
+              <span>My Patient Appointments</span>
             </Link>
             <Link to="/consultations" className={`list-group-item py-2 ${location.pathname === '/consultations' ? 'active' : ''}`}>
               <i className="bi bi-house fs-4 me-2"></i>
@@ -95,7 +99,33 @@ const Sidebar = ({ userRole }) => {
 
           </>
         )}
+        {userRole === 'Doctor' && (
+          <>
+          <div className="list-group mt-3">
+          <Link to="/patient-dashboard" className={`list-group-item py-2 ${location.pathname === '/patient-dashboard' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+              <i className="bi bi-house fs-4 me-2"></i>
+              <span>Dashboard</span>
+              </Link>
+            <Link to="/book-appointment-requests" className={`list-group-item py-2 ${location.pathname === '/book-appointment-requests' ? 'active' : ''}`}>
+              <i className="bi bi-house fs-4 me-2"></i>
+              <span>Appointment Requests</span>
+            </Link>
+            <Link to="/my-schedule" className={`list-group-item py-2 ${location.pathname === '/my-schedule' ? 'active' : ''}`}>
+              <i className="bi bi-house fs-4 me-2"></i>
+              <span>My Schedule</span>
+            </Link>
+            <Link to="/consultations" className={`list-group-item py-2 ${location.pathname === '/consultations' ? 'active' : ''}`}>
+              <i className="bi bi-house fs-4 me-2"></i>
+              <span>Consultations</span>
+            </Link>
+            <Link to="/news" className={`list-group-item py-2 ${location.pathname === '/news' ? 'active' : ''}`}>
+              <i className="bi bi-house fs-4 me-2"></i>
+              <span>News</span>
+            </Link>
+          </div>
 
+          </>
+        )}
                 
             </Offcanvas.Body>
         </Offcanvas>

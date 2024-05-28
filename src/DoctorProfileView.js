@@ -44,7 +44,7 @@ const UserProfileCard = () => {
                 <p>📍{doctor.address}</p>
               </div>
               <div className="mt-auto text-right">
-              <Link to={`/appointment-slot-list-for-patient/${doctor.id}`} style={{ marginRight:'-90%'}}>
+              <Link to={`/book-appointment/${doctor.id}`} style={{ marginRight:'-90%'}}>
                 <Button variant="primary" className="custom-book-btn align-self-end">
                   BOOK APPOINTMENT
                 </Button>

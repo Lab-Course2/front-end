@@ -3,7 +3,7 @@ import React from 'react';
 const MessageComponent = ({ message }) => {
   let type = 'information';
 
-  if (message && message.success === false) {
+  if (message && message.succeeded === false) {
     type = 'error';
   }
 

@@ -38,6 +38,7 @@ const [appointmentSlots, setAppointmentSlots] = useState([]);
       if (response.ok) {
         const data = await response.json();
         setAppointmentSlots(data);
+        console.log("data", data)
       } else {
         console.error('Failed to fetch appointment slots:', response.statusText);
       }

@@ -104,7 +104,7 @@ const DoctorWidget = ({ doctor }) => {
         <div className="col-md-4 w-100">
           <div className="card-body d-flex flex-rows ">
             <Link to={`/profile-card/${doctor.doctorId}`} className="btn btn-primary mr-3 mb-2 w-50" onClick={() => ProfileClick(doctor.doctorId)}>View Profile</Link>
-            <Link to={`/appointment-slot-list-for-patient/${doctor.doctorId}`} className="btn btn-secondary mb-2 w-50">Book Now</Link>
+            <Link to={`/book-appointment/${doctor.doctorId}`} className="btn btn-secondary mb-2 w-50">Book Now</Link>
           </div>
         </div>
       </div>
