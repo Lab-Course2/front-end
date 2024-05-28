@@ -20,6 +20,11 @@ import SearchList from './Search';
 import UserProfileCard from './DoctorProfileView';
 import UnauthorizedPage from './UnauthorizedPage';
 import ProfileSettings from './Patient/PatientProfileSettings';
+import AppointmentSlotList from './Clinic/AppointmentSlotList';
+import AppointmentSlotCreate from './Clinic/AppointmentSlotCreate.js';
+import AppointmentSlotCreateByWeeks from './Clinic/AppointmentSlotCreateByWeeks';
+import BookAppointment from './Clinic/BookAppointment';
+import AppointmentSlotListForPatient from './Clinic/AppointmentSlotListForPatient';
 
 const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) => (
   isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to="/" />
@@ -88,6 +93,10 @@ const history = createBrowserHistory();
               <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
               <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
               <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
+              <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
+              <Route path="/appointment-slot-create" element={<AppointmentSlotCreate userId={userId} />} />
+              <Route path="/appointment-slot-create-by-weeks" element={<AppointmentSlotCreateByWeeks userId={userId} />} />
+              <Route path="/book-appointment" element={<BookAppointment userId={userId} />} />
             </>
           )}
           {userRole === "Patient" && (
@@ -95,7 +104,8 @@ const history = createBrowserHistory();
               <Route path="/patient-dashboard" element={<PatientDashboard />} />
               <Route path="/patient-profile" element={<PatientProfile userId={userId} />} />
               <Route path="/search-list" element={<SearchList />} />
-              
+              <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
+              <Route path="/appointment-slot-list-for-patient/:doctorId" element={<AppointmentSlotListForPatient userId={userId} />} />
             </>
           )}
               <Route path="/profile-card/:userId" element={<UserProfileCard />} />

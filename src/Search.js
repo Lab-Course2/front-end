@@ -104,7 +104,7 @@ const DoctorWidget = ({ doctor }) => {
         <div className="col-md-4 w-100">
           <div className="card-body d-flex flex-rows ">
             <Link to={`/profile-card/${doctor.doctorId}`} className="btn btn-primary mr-3 mb-2 w-50" onClick={() => ProfileClick(doctor.doctorId)}>View Profile</Link>
-            <Link to="#" className="btn btn-secondary mb-2 w-50" onClick={() => window.location.href = "booking.html"}>Book Now</Link>
+            <Link to={`/appointment-slot-list-for-patient/${doctor.doctorId}`} className="btn btn-secondary mb-2 w-50">Book Now</Link>
           </div>
         </div>
       </div>
@@ -119,7 +119,7 @@ const SearchList = () => {
   const handleSearch = async (clinicType, location, clinicName) => {
     try {
       setLoading(true);
-      const response = await fetch(`https://localhost:7190/api/Search/SearchAppointment?SearchTerm=${clinicName}&Location=${location}&Category=${clinicType}&SearchType=Doctor`, {
+      const response = await fetch(`https://localhost:5179/api/Search/SearchAppointment?SearchTerm=${clinicName}&Location=${location}&Category=${clinicType}&SearchType=Doctor`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json'
@@ -147,7 +147,7 @@ const SearchList = () => {
 const fetchDoctors = async () => {
     try {
       setLoading(true);
-        const response = await fetch('https://localhost:7190/api/Search/FetchAllDoctors'); 
+        const response = await fetch('https://localhost:5179/api/Search/FetchAllDoctors'); 
         if (!response.ok) {
             throw new Error('Failed to fetch doctors');
         }
