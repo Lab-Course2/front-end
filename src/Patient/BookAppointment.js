@@ -14,7 +14,7 @@ const BookAppointment = (userId) => {
   const [selectedAppointmentSlotId, setSelectedAppointmentSlotId] = useState('');
   const [meetingReason, setMeetingReason] = useState('');
   const [meetingRequestDescription, setMeetingRequestDescription] = useState('');
-  const [isAccepted, setIsAccepted] = useState(false);
+  const [bookAppointmentStatus, setBookAppointmentStatus] = useState('');
   const [responseDateTime, setResponseDateTime] = useState(null);
   const [isBookingInProgress, setIsBookingInProgress] = useState(false);
   const [errorMessage, setErrorMessage]=useState(null);
@@ -56,10 +56,10 @@ const bookAppointment = async () => {
           patientId: UserId,
           meetingReason,
           meetingRequestDescription,
-          isAccepted,
+          bookAppointmentStatus:'Pending',
           responseDateTime
       };
-
+      
       // Create appointment
       const response = await fetch('https://localhost:7190/api/BookAppointment/CreateBookAppointment', {
           method: 'POST',
@@ -179,8 +179,6 @@ return (
     </Row>
   </Container>
 );
-
-
 };
 
 export default BookAppointment;

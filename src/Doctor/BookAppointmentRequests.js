@@ -7,7 +7,8 @@ function BookAppointmentRequests() {
     const [appointmentSlots, setAppointmentSlots] = useState({});
     const [patientData, setPatientData] = useState({});
     const [errors, setErrors] = useState(null);
-    const [userId, setUserId] = useState(''); // Assuming userId is stored somewhere
+    const [userId, setUserId] = useState('');
+    const [searchDate, setSearchDate] = useState('');
 
     useEffect(() => {
         // Fetch user id (assuming it's stored somewhere)
@@ -100,19 +101,20 @@ function BookAppointmentRequests() {
         });
     }, [appointments]);
 
-    const handleAccept = async (appointmentId) => {
+ const handleAccept = async (bookAppointmentId) => {
         try {
-            const response = await fetch(`https://localhost:7190/api/BookAppointment/Accept/${appointmentId}`, {
-                method: 'PUT',
+            const response = await fetch(`https://localhost:7190/api/Appointment/AcceptAppointment?id=${bookAppointmentId}`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
             });
+               
 
             if (response.ok) {
                 console.log('Appointment accepted successfully');
                 setAppointments((prevAppointments) =>
-                    prevAppointments.filter((appointment) => appointment.bookAppointmentId !== appointmentId)
+                 prevAppointments.filter((appointment) => appointment.bookAppointmentId !== bookAppointmentId)
                 );
             } else {
                 console.error('Failed to accept appointment:', response.statusText);
@@ -122,10 +124,10 @@ function BookAppointmentRequests() {
         }
     };
 
-    const handleDelete = async (appointmentId) => {
+ const handleDecline = async (bookAppointmentId) => {
         try {
-            const response = await fetch(`https://localhost:7190/api/BookAppointment/${appointmentId}`, {
-                method: 'DELETE',
+            const response = await fetch(`https://localhost:7190/api/Appointment/DeclineAppointment?id=${bookAppointmentId}`, {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -133,7 +135,7 @@ function BookAppointmentRequests() {
     
             if (response.ok) {
                 setAppointments((prevAppointments) =>
-                    prevAppointments.filter((appointment) => appointment.bookAppointmentId !== appointmentId)
+                    prevAppointments.filter((appointment) => appointment.bookAppointmentId !== bookAppointmentId)
                 );
                 console.log('Appointment deleted successfully');
             } else {
@@ -143,13 +145,20 @@ function BookAppointmentRequests() {
             console.error('Error during deleting appointment:', error);
         }
     };
-
+  
     // Filter appointments where doctorId matches the logged-in userId
-    const doctorAppointments = appointments.filter(appointment =>
+   const doctorAppointments = appointments.filter(appointment =>
         appointmentSlots[appointment.appointmentSlotId] &&
         appointmentSlots[appointment.appointmentSlotId].doctorId === userId &&
-        !appointment.isAccepted
+        appointment.bookAppointmentStatus === "Pending" &&
+        appointmentSlots[appointment.appointmentSlotId].date.includes(searchDate)
     );
+  
+      const isFutureDate = (dateString) => {
+        const appointmentDate = new Date(dateString);
+        const today = new Date();
+        return appointmentDate > today;
+    };
     
     return (
         <div className="col-py-9">
@@ -161,63 +170,70 @@ function BookAppointmentRequests() {
                     <div className="my-5">
                         <h3>Pending Appointment Requests</h3>    
                     </div>
+  <div className="mb-3">
+                        <label htmlFor="searchDate" className="form-label">Search by Date:</label>
+                        <input
+                            type="date"
+                            id="searchDate"
+                            className="form-control"
+                            value={searchDate}
+                            onChange={(e) => setSearchDate(e.target.value)}
+                        />
+                    </div>
                     {errors && <div className="alert alert-danger">{errors}</div>}
-                    <div class="table-responsive">
-                    <table className="table table-striped">
-                        <thead>
-                          <tr>
-                            <th scope="col">#</th>
-                            <th scope="col">Date</th>
-                            <th scope="col">Start Time - End Time</th>
-                            <th scope="col">Patient</th>
-                            <th scope="col">Meeting Reason</th>
-                            <th scope="col">Meeting Request Desc.</th>
-                            <th scope="col">Is Accepted</th>
-                            <th scope="col">Response Time</th>
-                            <th scope="col" style={{ textAlign: 'center' }}>Actions</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {doctorAppointments.map((appointment, index) => (
-                            <tr key={appointment.bookAppointmentId}>
-                              <th scope="row">{index + 1}</th>
-                              <td>
-                                {appointmentSlots[appointment.appointmentSlotId] ? 
-                                  appointmentSlots[appointment.appointmentSlotId].date : 
-                                  'Fetching...'
-                                }
-                              </td>
-                              <td>
-                                {appointmentSlots[appointment.appointmentSlotId] ? 
-                                  `${appointmentSlots[appointment.appointmentSlotId].startTime} - ${appointmentSlots[appointment.appointmentSlotId].endTime}` : 
-                                  'Fetching...'
-                                }
-                              </td>
-                              <td>
-                                {patientData[appointment.patientId] ? 
-                                  `${patientData[appointment.patientId].name} ${patientData[appointment.patientId].surname}` : 
-                                  'Fetching...'
-                                }
-                              </td>
-                              <td>{appointment.meetingReason}</td>
-                              <td>{appointment.meetingRequestDescription}</td>
-                              <td>{appointment.isAccepted ? 'Yes' : 'No'}</td>
-                              <td>{appointment.responseDateTime}</td>
-                              <td>
-                                <button className="btn btn-success" onClick={() => handleAccept(appointment.bookAppointmentId)}>Accept</button>
-                                <button className="btn btn-danger ml-2" onClick={() => handleDelete(appointment.bookAppointmentId)}>Decline</button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                </table>
-
-
+                    <div className="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Start Time - End Time</th>
+                                    <th scope="col">Patient</th>
+                                    <th scope="col">Meeting Reason</th>
+                                    <th scope="col">Meeting Request Desc.</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col" style={{ textAlign: 'center' }}>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {doctorAppointments.map((appointment, index) => (
+                                    <tr key={appointment.bookAppointmentId}>
+                                        <th scope="row">{index + 1}</th>
+                                        <td>
+                                            {appointmentSlots[appointment.appointmentSlotId] ? 
+                                                appointmentSlots[appointment.appointmentSlotId].date : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>
+                                            {appointmentSlots[appointment.appointmentSlotId] ? 
+                                                `${appointmentSlots[appointment.appointmentSlotId].startTime} - ${appointmentSlots[appointment.appointmentSlotId].endTime}` : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>
+                                            {patientData[appointment.patientId] ? 
+                                                `${patientData[appointment.patientId].name} ${patientData[appointment.patientId].surname}` : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>{appointment.meetingReason}</td>
+                                        <td>{appointment.meetingRequestDescription}</td>
+                                        <td>{appointment.bookAppointmentStatus}</td>
+                                        {isFutureDate(appointmentSlots[appointment.appointmentSlotId].date) && (
+                                            <td>
+                                                <button className="btn btn-success" onClick={() => handleAccept(appointment.bookAppointmentId)}>Accept</button>
+                                                <button className="btn btn-danger ml-2" onClick={() => handleDecline(appointment.bookAppointmentId)}>Decline</button>
+                                            </td>
+                                        )}
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     );
 }
-
 export default BookAppointmentRequests;

@@ -21,7 +21,7 @@ const AppointmentSlotCreate = (userId) => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch(`https://localhost:5179/api/Doctor/clinic/${UserId}`);
+        const response = await fetch(`https://localhost:7190/api/Doctor/clinic/${UserId}`);
         if (response.ok) {
           const data = await response.json();
           setDoctors(data);
@@ -70,9 +70,17 @@ const AppointmentSlotCreate = (userId) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    // Get the current date in ISO format
+    const currentDate = new Date().toISOString().split('T')[0];
+  
+    // Check if the selected date is in the past
+    if (formData.Date < currentDate) {
+      setErrorMessage('Cannot create appointment slot in the past.');
+      return;
+    }
+  
     try {
-      const response = await fetch('https://localhost:5179/api/AppointmentSlot', {
+      const response = await fetch('https://localhost:7190/api/AppointmentSlot', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -151,6 +159,10 @@ const AppointmentSlotCreate = (userId) => {
             onChange={handleChange}
           />
         </Form.Group>
+
+        {formData.Date && formData.Date < new Date().toISOString().split('T')[0] && (
+          <p className="error-message">Selected date cannot be in the past.</p>
+        )}
 
         <Button variant="primary" type="submit">
           Submit
