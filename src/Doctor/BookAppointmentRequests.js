@@ -16,7 +16,7 @@ function BookAppointmentRequests() {
 
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:5179/api/BookAppointment', {
+                const response = await fetch('https://localhost:7190/api/BookAppointment', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ function BookAppointmentRequests() {
     useEffect(() => {
         const fetchAppointmentSlots = async () => {
             try {
-                const response = await fetch('https://localhost:5179/api/AppointmentSlot/', {
+                const response = await fetch('https://localhost:7190/api/AppointmentSlot/', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -71,7 +71,7 @@ function BookAppointmentRequests() {
     useEffect(() => {
         const fetchPatientData = async (patientId) => {
             try {
-                const response = await fetch(`https://localhost:5179/api/Patient/GetPatientById?patientId=${patientId}`, {
+                const response = await fetch(`https://localhost:7190/api/Patient/GetPatientById?patientId=${patientId}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -102,7 +102,7 @@ function BookAppointmentRequests() {
 
     const handleAccept = async (appointmentId) => {
         try {
-            const response = await fetch(`https://localhost:5179/api/BookAppointment/Accept/${appointmentId}`, {
+            const response = await fetch(`https://localhost:7190/api/BookAppointment/Accept/${appointmentId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ function BookAppointmentRequests() {
 
     const handleDelete = async (appointmentId) => {
         try {
-            const response = await fetch(`https://localhost:5179/api/BookAppointment/${appointmentId}`, {
+            const response = await fetch(`https://localhost:7190/api/BookAppointment/${appointmentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

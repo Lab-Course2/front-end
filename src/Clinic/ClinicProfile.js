@@ -1,30 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Sidebar from '../Sidebar';
+import MessageComponent from '../Messages/MessageComponent';
 
 const ClinicProfile = ({ userId }) => {
   const [clinic, setClinic] = useState(null);
   const [updatedClinic, setUpdatedClinic] = useState({
     userName: '',
     name: '',
-    surname: '',
+    surname: null,
     role: 'Clinic',
     email: '',
-    password: null,
+    password: '',
     address: '',
     phoneNumber: '',
     location: '',
     createdDate: '',
     otherDetails: '',
+    photoData: null,
+    photoFormat: null,
   });
-  const [showSuccessAlert, setShowSuccessAlert] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null); 
+  const [formErrors, setFormErrors] = useState({
+    userName: '',
+    name: '',
+    email: '',
+    address: '',
+    phoneNumber: '',
+    location: '',
+    otherDetails: '',
+  });
 
   useEffect(() => {
     const fetchClinicData = async () => {
       try {
-        const response = await fetch(
-          `https://localhost:7207/api/Clinic/GetClinicById?clinicId=${userId}`
-        );
+        const response = await fetch(`https://localhost:7190/api/Clinic/GetClinicById?clinicId=${userId}`);
 
         if (response.ok) {
           const clinicData = await response.json();
@@ -40,39 +50,32 @@ const ClinicProfile = ({ userId }) => {
     fetchClinicData();
   }, [userId]);
 
-  const handleUpdateProfile = async () => {
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
     try {
-      const response = await fetch(
-        `https://localhost:7207/api/Clinic/UpdateClinic/${userId}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userName: updatedClinic.userName,
-            name: updatedClinic.name,
-            surname: updatedClinic.surname,
-            role: 'Clinic',
-            email: updatedClinic.email,
-            password: updatedClinic.password,
-            address: updatedClinic.address,
-            phoneNumber: updatedClinic.phoneNumber,
-            location: updatedClinic.location,
-            createdDate: updatedClinic.createdDate,
-            otherDetails: updatedClinic.otherDetails,
-          }),
-        }
-      );
+      const response = await fetch(`https://localhost:7190/api/Clinic/UpdateClinic/${userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedClinic),
+      });
 
       if (response.ok) {
-        setShowSuccessAlert(true);
         const updatedData = await response.json();
+        if (updatedData.succeeded === true) {
+          console.log('Operation succeeded: true');
+          setErrorMessage(updatedData);
+          console.log(updatedData);
+        } else {
+          console.log('Operation succeeded: false');
+          setErrorMessage(updatedData);
+          console.log(updatedData);
+        }
         setClinic((prevClinic) => ({
           ...prevClinic,
           otherDetails: updatedData.otherDetails,
         }));
-        console.log('Clinic updated successfully!', updatedData);
       } else {
         const errorResponse = await response.json();
         console.error('Failed to update clinic:', errorResponse);
@@ -88,140 +91,190 @@ const ClinicProfile = ({ userId }) => {
       ...prevClinic,
       [name]: value,
     }));
+
+    // Validate each field as it's being typed
+    validateField(name, value);
+  };
+
+  const validateField = (fieldName, value) => {
+    switch (fieldName) {
+      case 'userName':
+      case 'name':
+      case 'address':
+      case 'location':
+      case 'otherDetails':
+        setFormErrors({
+          ...formErrors,
+          [fieldName]: value ? '' : 'This field is required',
+        });
+        break;
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        setFormErrors({
+          ...formErrors,
+          email: emailRegex.test(value)
+            ? ''
+            : 'Please enter a valid email address (e.g., example@example.com)',
+        });
+        break;
+      case 'phoneNumber':
+        // Check if the phone number contains only numbers
+        const isValidPhoneNumber = /^\d+$/.test(value);
+        setFormErrors({
+          ...formErrors,
+          phoneNumber: isValidPhoneNumber
+            ? ''
+            : 'Please enter a valid phone number containing only numbers',
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
+  const handlePhotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUpdatedClinic((prevClinic) => ({
+          ...prevClinic,
+          photoData: reader.result.split(",")[1],
+          photoFormat: file.type.split("/")[1],
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
-    <div
-      className='container mt-4'
-      style={{ maxWidth: '1000px', marginLeft: '5%', marginTop: '5%' }}
-    >
-      <Sidebar userRole='Clinic' />
-      <div className='mt-4'>
-        {clinic ? (
-          <>
-            <div className='my-5'>
-              <h3>Clinic Profile</h3>
-              <hr />
+    <div className="col-py-9">
+      <div className="row-md-1">
+        <Sidebar userRole='Clinic' />
+      </div>
+      <div className="row-md-5 d-flex justify-content-center" style={{marginTop:'-5%'}}>
+        <div className="w-75">
+          <div className="my-5">
+            <h2>Clinic Profile</h2>
+            <hr />
+          </div>
+          {errorMessage && <MessageComponent message={errorMessage} />}
+          <form className="file-upload" onSubmit={handleUpdateProfile}>
+            <div className="form-group">
+              <label>Username *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="userName"
+                value={updatedClinic.userName}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.userName && (
+                <p className="error-message">{formErrors.userName}</p>
+              )}
             </div>
-            <form className='file-upload'>
-              <div className='row mb-5 gx-5'>
-                <div className='col-xxl-8 mb-5 mb-xxl-0'>
-                  {showSuccessAlert && (
-                    <div className='alert alert-success' role='alert'>
-                      Clinic updated successfully!
-                    </div>
-                  )}
-                  <div className='bg-secondary-soft px-4 py-5 rounded'>
-                    <div className='row g-3'>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Username *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='userName'
-                          value={updatedClinic.userName}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Name *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='name'
-                          value={updatedClinic.name}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Surname *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='surname'
-                          value={updatedClinic.surname}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Email *</label>
-                        <input
-                          type='email'
-                          className='form-control'
-                          name='email'
-                          value={updatedClinic.email}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Address *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='address'
-                          value={updatedClinic.address}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Phone Number *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='phoneNumber'
-                          value={updatedClinic.phoneNumber}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Location *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='location'
-                          value={updatedClinic.location}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Created Date *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='createdDate'
-                          value={updatedClinic.createdDate}
-                          readOnly
-                        />
-                      </div>
-                      <div className='col-md-6'>
-                        <label className='form-label'>Other Details *</label>
-                        <input
-                          type='text'
-                          className='form-control'
-                          name='otherDetails'
-                          value={updatedClinic.otherDetails}
-                          onChange={handleInputChange}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className='gap-3 d-md-flex justify-content-md-end text-center'>
-                  <button
-                    type='button'
-                    className='btn btn-primary btn-lg'
-                    style={{ marginRight: '5%' }}
-                    onClick={handleUpdateProfile}
-                  >
-                    Update profile
-                  </button>
-                </div>
-              </div>
-            </form>
-          </>
-        ) : (
-          <p>clinic details zamira</p>
-        )}
+            <div className="form-group">
+              <label>Name *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="name"
+                value={updatedClinic.name}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.name && (
+                <p className="error-message">{formErrors.name}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Email *</label>
+              <input
+                type="email"
+                className="form-control"
+                name="email"
+                value={updatedClinic.email}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.email && (
+                <p className="error-message">{formErrors.email}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Address *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="address"
+                value={updatedClinic.address}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.address && (
+                <p className="error-message">{formErrors.address}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Phone Number *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="phoneNumber"
+                value={updatedClinic.phoneNumber}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.phoneNumber && (
+                <p className="error-message">{formErrors.phoneNumber}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Location *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="location"
+                value={updatedClinic.location}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.location && (
+                <p className="error-message">{formErrors.location}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label>Created Date *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="createdDate"
+                value={updatedClinic.createdDate}
+                readOnly
+              />
+            </div>
+            <div className="form-group">
+              <label>Other Details *</label>
+              <input
+                type="text"
+                className="form-control"
+                name="otherDetails"
+                value={updatedClinic.otherDetails}
+                onChange={handleInputChange}
+                required
+              />
+              {formErrors.otherDetails && (
+                <p className="error-message">{formErrors.otherDetails}</p>
+              )}
+            </div>
+            <div className="form-group">
+              <label htmlFor="photo">Photo:</label>
+              <input type="file" id="photo" name="photo" accept="image/*" onChange={handlePhotoChange} />
+            </div>
+            <button type="submit" className="btn btn-primary w-100">Update</button>
+          </form>
+        </div>
       </div>
     </div>
   );

@@ -15,7 +15,7 @@ function MyPatientAppointments() {
 
         const fetchData = async () => {
             try {
-                const response = await fetch('https://localhost:5179/api/BookAppointment', {
+                const response = await fetch('https://localhost:7190/api/BookAppointment', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ function MyPatientAppointments() {
     useEffect(() => {
         const fetchAppointmentSlots = async () => {
             try {
-                const response = await fetch('https://localhost:5179/api/AppointmentSlot/', {
+                const response = await fetch('https://localhost:7190/api/AppointmentSlot/', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -73,7 +73,7 @@ function MyPatientAppointments() {
 
     const fetchDoctorData = async (doctorId) => {
         try {
-            const response = await fetch(`https://localhost:5179/api/Doctor/GetDoctorById?doctorId=${doctorId}`, {
+            const response = await fetch(`https://localhost:7190/api/Doctor/GetDoctorById?doctorId=${doctorId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
@@ -96,7 +96,7 @@ function MyPatientAppointments() {
     };
     const deleteAppointment = async (appointmentId) => {
         try {
-            const response = await fetch(`https://localhost:5179/api/BookAppointment/${appointmentId}`, {
+            const response = await fetch(`https://localhost:7190/api/BookAppointment/${appointmentId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ function MyPatientAppointments() {
     const myPatientAppointments = appointments.filter(appointment =>
         appointmentSlots[appointment.appointmentSlotId] &&
         appointmentSlots[appointment.appointmentSlotId].patientId === userId &&
-        appointment.isAccepted
+        appointment.isAccepted === true
     );
     
     const myPatientRequestAppointments = appointments.filter(appointment =>
@@ -129,6 +129,30 @@ function MyPatientAppointments() {
         appointment.isAccepted === false
     );
 
+    const cancelAppointmentFromPatient = async (appointmentId) => {
+        try {
+            const response = await fetch(`https://localhost:7190/api/BookAppointment/cancel-from-patient/${appointmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData.message); // Log success message
+                // Handle any additional logic after successful cancelation
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to cancel appointment:', errorData.message);
+                // Handle error case
+            }
+        } catch (error) {
+            console.error('Error canceling appointment:', error);
+            // Handle network error
+        }
+    };
+    
     return (
         <div className="col-py-9">
             <div className="row-md-1">
@@ -203,6 +227,8 @@ function MyPatientAppointments() {
                                     <th scope="col">Doctor</th>
                                     <th scope="col">Meeting Reason</th>
                                     <th scope="col">Meeting Request Desc.</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -229,6 +255,12 @@ function MyPatientAppointments() {
                                         </td>
                                         <td>{appointment.meetingReason}</td>
                                         <td>{appointment.meetingRequestDescription}</td>
+                                        <td>{appointment.isCanceled ? 'CANCELED':'Ongoing'}</td>
+                                        {!appointment.isCanceled && (
+                                            <td>
+                                                <button className="btn btn-danger btn-sm" onClick={() => cancelAppointmentFromPatient(appointment.bookAppointmentId)} >Cancel Appointment</button>
+                                            </td>
+                                        )}
                                     </tr>
                                 ))}
                             </tbody>

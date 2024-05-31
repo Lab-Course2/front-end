@@ -23,7 +23,7 @@ import ProfileSettings from './Patient/PatientProfileSettings';
 import AppointmentSlotList from './Clinic/AppointmentSlotList';
 import AppointmentSlotCreate from './Clinic/AppointmentSlotCreate';
 import AppointmentSlotCreateByWeeks from './Clinic/AppointmentSlotCreateByWeeks';
-import BookAppointment from './Clinic/BookAppointment';
+import BookAppointment from './Patient/BookAppointment';
 import AppointmentSlotListForPatient from './Clinic/AppointmentSlotListForPatient';
 import BookAppointmentRequests from './Doctor/BookAppointmentRequests';
 import MyPatientAppointments from './Patient/MyPatientAppointments';

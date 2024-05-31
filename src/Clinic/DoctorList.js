@@ -83,63 +83,63 @@ const DoctorList = ({ userId }) =>
   };
 
   return (
-    <div className="container mt-4">
-      <div className="row">
-        <div className="col-md-3" style={{ width: '25%' }}>
-          <Sidebar userRole='Clinic' />
+    <div className="col-py-9">
+        <div className="row-md-1">
+            <Sidebar userRole='Clinic' />
         </div>
-        <div className="col-md-9" style={{ marginLeft: 'auto', width: '75%' }}>
-          <h2>Doctors List</h2>
-          <Link to="/create-doctor" className="btn btn-primary mb-3">
-            Create Doctor
-          </Link>
-          <table className="table table-striped">
-            <thead>
-              <tr>
-                <th>Username</th>
-                <th>Name</th>
-                <th>Surname</th>
-                <th>Specialisation</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Date of Birth</th>
-                <th>Gender</th>
-                <th>Address</th>
-                <th>Description</th>
-                <th>Clinic Name</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {doctors.map((doctor) => (
-                <tr key={doctor.id}>
-                  <td>{doctor.userName}</td>
-                  <td>{doctor.name}</td>
-                  <td>{doctor.surname}</td>
-                  <td>{doctor.specialisation}</td>
-                  <td>{doctor.email}</td>
-                  <td>{doctor.phoneNumber}</td>
-                  <td>{doctor.dateOfBirth}</td>
-                  <td>{doctor.gender}</td>
-                  <td>{doctor.address}</td>
-                  <td>{doctor.description}</td>
-                  <td>{getClinicName(doctor.clinicId)}</td>
-                  <td>
-                    <Link to={`/edit-doctor/${doctor.id}`} className="btn btn-primary ml-2">
-                      Edit
-                    </Link>
-                    <button className="btn btn-danger" onClick={() => handleDelete(doctor.id)}>
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="row-md-5 d-flex justify-content ml-3">
+            <div className="w-75">
+                <h2>Doctors List</h2>
+                <Link to="/create-doctor" className="btn btn-primary mb-3">
+                    Create Doctor
+                </Link>
+                <div className="table-responsive" style={{ width:'97vw'}}>
+                    <table className="table table-striped">
+                        <thead>
+                            <tr>
+                                <th scope="col">Name</th>
+                                <th scope="col">Surname</th>
+                                <th scope="col">Specialisation</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Phone Number</th>
+                                <th scope="col">Date of Birth</th>
+                                <th scope="col">Gender</th>
+                                <th scope="col">Address</th>
+                                <th scope="col">Description</th>
+                                <th scope="col">Clinic Name</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {doctors.map((doctor) => (
+                                <tr key={doctor.id}>
+                                    <td>{doctor.name}</td>
+                                    <td>{doctor.surname}</td>
+                                    <td>{doctor.specialisation}</td>
+                                    <td>{doctor.email}</td>
+                                    <td>{doctor.phoneNumber}</td>
+                                    <td>{doctor.dateOfBirth}</td>
+                                    <td>{doctor.gender}</td>
+                                    <td>{doctor.address}</td>
+                                    <td>{doctor.description}</td>
+                                    <td>{getClinicName(doctor.clinicId)}</td>
+                                    <td>
+                                        <Link to={`/edit-doctor/${doctor.id}`} className="btn btn-primary ml-2">
+                                            Edit
+                                        </Link>
+                                        <button className="btn btn-danger" onClick={() => handleDelete(doctor.id)}>
+                                            Delete
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  );
+);
 };
 
 export default DoctorList;
