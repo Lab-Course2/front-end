@@ -175,5 +175,3 @@ function MyPatientAppointments() {
         </div>
     );
 }
-
-export default MyPatientAppointments;

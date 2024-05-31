@@ -101,7 +101,7 @@ function BookAppointmentRequests() {
         });
     }, [appointments]);
 
-    const handleAccept = async (bookAppointmentId) => {
+ const handleAccept = async (bookAppointmentId) => {
         try {
             const response = await fetch(`https://localhost:7190/api/Appointment/AcceptAppointment?id=${bookAppointmentId}`, {
                 method: 'POST',
@@ -109,11 +109,12 @@ function BookAppointmentRequests() {
                     'Content-Type': 'application/json',
                 },
             });
+               
 
             if (response.ok) {
                 console.log('Appointment accepted successfully');
                 setAppointments((prevAppointments) =>
-                    prevAppointments.filter((appointment) => appointment.bookAppointmentId !== bookAppointmentId)
+                 prevAppointments.filter((appointment) => appointment.bookAppointmentId !== bookAppointmentId)
                 );
             } else {
                 console.error('Failed to accept appointment:', response.statusText);
@@ -123,7 +124,7 @@ function BookAppointmentRequests() {
         }
     };
 
-    const handleDecline = async (bookAppointmentId) => {
+ const handleDecline = async (bookAppointmentId) => {
         try {
             const response = await fetch(`https://localhost:7190/api/Appointment/DeclineAppointment?id=${bookAppointmentId}`, {
                 method: 'POST',
@@ -144,16 +145,16 @@ function BookAppointmentRequests() {
             console.error('Error during deleting appointment:', error);
         }
     };
-
+  
     // Filter appointments where doctorId matches the logged-in userId
-    const doctorAppointments = appointments.filter(appointment =>
+   const doctorAppointments = appointments.filter(appointment =>
         appointmentSlots[appointment.appointmentSlotId] &&
         appointmentSlots[appointment.appointmentSlotId].doctorId === userId &&
         appointment.bookAppointmentStatus === "Pending" &&
         appointmentSlots[appointment.appointmentSlotId].date.includes(searchDate)
     );
-
-    const isFutureDate = (dateString) => {
+  
+      const isFutureDate = (dateString) => {
         const appointmentDate = new Date(dateString);
         const today = new Date();
         return appointmentDate > today;
@@ -169,7 +170,7 @@ function BookAppointmentRequests() {
                     <div className="my-5">
                         <h3>Pending Appointment Requests</h3>    
                     </div>
-                    <div className="mb-3">
+  <div className="mb-3">
                         <label htmlFor="searchDate" className="form-label">Search by Date:</label>
                         <input
                             type="date"
@@ -235,5 +236,4 @@ function BookAppointmentRequests() {
         </div>
     );
 }
-
 export default BookAppointmentRequests;

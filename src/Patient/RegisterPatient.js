@@ -203,7 +203,7 @@ const RegisterPatient = () => {
   
       // Usage
       const response = await fetch(
-        'https://localhost:7190/api/Patient/CreatePatient',
+        'https://localhost:7207/api/Patient/CreatePatient',
         {
           method: 'POST',
           headers: {
