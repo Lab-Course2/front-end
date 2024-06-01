@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import { Button, Container, Row, Col, Form } from 'react-bootstrap';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import MessageComponent from '../Messages/MessageComponent';
 
 const BookAppointment = (userId) => {
@@ -122,6 +122,10 @@ const fetchDoctorById = async (doctorId) => {
   return null; // In case of error, return null
 };
 
+const Payment = () => {
+  window.location.href = '/stripe-payment-form';
+}
+
 return (
   <Container>
       <Row className="align-items-center" style={{display:'flex', justifyContent:'center', marginTop:'-7%'}}>
@@ -172,8 +176,11 @@ return (
             <Form.Control as="textarea" rows={3} placeholder="Enter meeting request description" value={meetingRequestDescription} onChange={(e) => setMeetingRequestDescription(e.target.value)} />
           </Form.Group>
           <Button variant="primary" onClick={bookAppointment} disabled={!selectedAppointmentSlotId || isBookingInProgress}>
-            {isBookingInProgress ? 'Booking...' : 'Book Appointment'}
+            {isBookingInProgress ? 'Booking...' : 'Proceed to Pay '}
           </Button>
+         <Link to={'/checkout-form'}>
+         <button >Proceed to Pay</button>
+         </Link> 
         </Form>
       </Col>
     </Row>

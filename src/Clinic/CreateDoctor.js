@@ -82,12 +82,12 @@ const CreateDoctor = (userId) => {
         });
         break;
       case 'personalNumber':
-      case 'phoneNumber':
-        setFormErrors({
-          ...formErrors,
-          [fieldName]: /^\d+$/.test(value) ? '' : 'Please enter a valid number',
-        });
-        break;
+        case 'phoneNumber':
+          setFormErrors({
+            ...formErrors,
+            [fieldName]: /^[\d+]+$/.test(value) ? '' : 'Please enter a valid phone number',
+          });
+          break;        
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         setFormErrors({
@@ -104,30 +104,42 @@ const CreateDoctor = (userId) => {
             : 'Password must contain one uppercase letter, one lowercase letter, one digit, one symbol, and must be at least 8 characters long',
         });
         break;
-      case 'dateOfBirth':
-        const dob = new Date(value);
-        const today = new Date();
-        const age = today.getFullYear() - dob.getFullYear();
-        const monthDiff = today.getMonth() - dob.getMonth();
-
-        // Check if the user is at least 18 years old
-        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-          age--;
-        }
-        if (age < 21) {
-          setFormErrors({
-            ...formErrors,
-            dateOfBirth: 'You must be at least 21 years old',
-          });
-        } else {
-          setFormErrors({
-            ...formErrors,
-            dateOfBirth: '',
-          });
-        }
-        break;
-      default:
-        break;
+        case 'dateOfBirth':
+          // Check if date of birth is provided
+          if (!value) {
+            setFormErrors({
+              ...formErrors,
+              dateOfBirth: 'Date of birth is required',
+            });
+            break;
+          }
+        
+          // Calculate the user's age based on the provided date of birth
+          const dob = new Date(value);
+          const today = new Date();
+          let age = today.getFullYear() - dob.getFullYear();
+        
+          // Adjust age if the user's birthday hasn't occurred yet this year
+          if (
+            dob.getMonth() > today.getMonth() ||
+            (dob.getMonth() === today.getMonth() && dob.getDate() > today.getDate())
+          ) {
+            age--;
+          }
+        
+          // Check if the user is at least 18 years old
+          if (age < 21) {
+            setFormErrors({
+              ...formErrors,
+              dateOfBirth: 'You must be at least 24 years old',
+            });
+          } else {
+            setFormErrors({
+              ...formErrors,
+              dateOfBirth: '',
+            });
+          }
+          break;
     }
   };
 
@@ -213,7 +225,7 @@ const CreateDoctor = (userId) => {
             </div>
             <div className="form-group">
               <label htmlFor="personalNumber">Personal Number:</label>
-              <input type="number" id="personalNumber" name="personalNumber" value={newDoctor.personalNumber} onChange={handleInputChange} />
+              <input type="text" id="personalNumber" name="personalNumber" value={newDoctor.personalNumber} onChange={handleInputChange} />
               {formErrors.personalNumber && <p className="error-message">{formErrors.personalNumber}</p>}
             </div>
             <div className="form-group">

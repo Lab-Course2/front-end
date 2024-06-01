@@ -28,6 +28,7 @@ import AppointmentSlotListForPatient from './Clinic/AppointmentSlotListForPatien
 import BookAppointmentRequests from './Doctor/BookAppointmentRequests';
 import MyPatientAppointments from './Patient/MyPatientAppointments';
 import MySchedule from './Doctor/MySchedule';
+import CheckoutForm from './Patient/CheckoutForm';
 
 const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) => (
   isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to="/" />
@@ -86,41 +87,44 @@ const history = createBrowserHistory();
     <Stack direction="vertical">
       <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} />
       <Router history={history}>
-        <Routes>
+      <Routes>
+    
           {isLoggedIn ? (
             <>
-           {userRole === "Clinic" && (
-            <>
-              <Route path="/clinic-dashboard" element={<ClinicDashboard />} />
-              <Route path="/edit-doctor/:id" element={<EditDoctor />} />
-              <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
-              <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
-              <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
-              <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
-              <Route path="/appointment-slot-create" element={<AppointmentSlotCreate userId={userId} />} />
-              <Route path="/appointment-slot-create-by-weeks" element={<AppointmentSlotCreateByWeeks userId={userId} />} />
-            </>
-          )}
-          {userRole === "Patient" && (
-            <>
-              <Route path="/patient-dashboard" element={<PatientDashboard />} />
-              <Route path="/patient-profile" element={<PatientProfile userId={userId} />} />
-              <Route path="/search-list" element={<SearchList />} />
-              <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
-              <Route path="/appointment-slot-list-for-patient/:doctorId" element={<AppointmentSlotListForPatient userId={userId} />} />
-              <Route path="/book-appointment/:doctorId" element={<BookAppointment userId={userId} />} />
-              <Route path="/my-patient-appointments" element={<MyPatientAppointments userId={userId} />} />
-            </>
-          )}
-          {userRole === "Doctor" && (
-            <>
-              <Route path="/book-appointment-requests" element={<BookAppointmentRequests userId={userId} />} />
-              <Route path="/my-schedule" element={<MySchedule userId={userId} />} />
-            </>
-          )}
+              {userRole === "Clinic" && (
+                <>
+                  <Route path="/clinic-dashboard" element={<ClinicDashboard />} />
+                  <Route path="/edit-doctor/:id" element={<EditDoctor />} />
+                  <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
+                  <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
+                  <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
+                  <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
+                  <Route path="/appointment-slot-create" element={<AppointmentSlotCreate userId={userId} />} />
+                  <Route path="/appointment-slot-create-by-weeks" element={<AppointmentSlotCreateByWeeks userId={userId} />} />
+                </>
+              )}
+              {userRole === "Patient" && (
+                <>
+                  <Route path="/patient-dashboard" element={<PatientDashboard />} />
+                  <Route path="/patient-profile" element={<PatientProfile userId={userId} />} />
+                  <Route path="/search-list" element={<SearchList />} />
+                  <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
+                  <Route path="/appointment-slot-list-for-patient/:doctorId" element={<AppointmentSlotListForPatient userId={userId} />} />
+                  <Route path="/book-appointment/:doctorId" element={<BookAppointment userId={userId} />} />
+                  <Route path="/my-patient-appointments" element={<MyPatientAppointments userId={userId} />} />
+                  {/* <Route path="/stripe-payment-form" element={<StripePaymentForm />} /> */}
+                  <Route path="/checkout-form" element={<CheckoutForm />} />
+                </>
+              )}
+              {userRole === "Doctor" && (
+                <>
+                  <Route path="/book-appointment-requests" element={<BookAppointmentRequests userId={userId} />} />
+                  <Route path="/my-schedule" element={<MySchedule userId={userId} />} />
+                 
+                </>
+              )}
               <Route path="/profile-card/:userId" element={<UserProfileCard />} />
-              
-
+             
             </>
           ) : (
             <>
@@ -132,14 +136,12 @@ const history = createBrowserHistory();
               <Route element={<Navigate to="/login" />} />
               <Route path="/" element={<Navigate to="/home" />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
-
+             
             </>
           )}
-            <Route path="/test-t" element={<ProfileSettings />} />
-
-            <Route path="/*" element={isLoggedIn ? <Navigate to="/home" /> : <UnauthorizedPage />} />
+          <Route path="/test-t" element={<ProfileSettings />} />
+          <Route path="/*" element={isLoggedIn ? <Navigate to="/home" /> : <UnauthorizedPage />} />
         </Routes>
-
       </Router>
       <div className="static-content" style={{ width: '100%', overflowX: 'hidden' }}>
         <Footer />
