@@ -70,15 +70,7 @@ const AppointmentSlotCreate = (userId) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Get the current date in ISO format
-    const currentDate = new Date().toISOString().split('T')[0];
-  
-    // Check if the selected date is in the past
-    if (formData.Date < currentDate) {
-      setErrorMessage('Cannot create appointment slot in the past.');
-      return;
-    }
-  
+    
     try {
       const response = await fetch('https://localhost:7190/api/AppointmentSlot', {
         method: 'POST',
@@ -159,10 +151,6 @@ const AppointmentSlotCreate = (userId) => {
             onChange={handleChange}
           />
         </Form.Group>
-
-        {formData.Date && formData.Date < new Date().toISOString().split('T')[0] && (
-          <p className="error-message">Selected date cannot be in the past.</p>
-        )}
 
         <Button variant="primary" type="submit">
           Submit

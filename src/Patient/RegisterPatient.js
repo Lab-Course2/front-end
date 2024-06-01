@@ -118,12 +118,12 @@ const RegisterPatient = () => {
             break;
           }
         
-          // Check if the phone number contains only numbers or '+'
-          const isValidPhoneNumber = /^\+?\d+$/.test(value);
+          // Check if the phone number contains only numbers
+          const isValidPhoneNumber = /^\d+$/.test(value);
           if (!isValidPhoneNumber) {
             setFormErrors({
               ...formErrors,
-              phoneNumber: 'Please enter a valid phone number containing only numbers or +',
+              phoneNumber: 'Please enter a valid phone number containing only numbers',
             });
           } else {
             setFormErrors({
@@ -133,40 +133,40 @@ const RegisterPatient = () => {
           }
           break;
         
-          case 'dateOfBirth':
-            // Check if date of birth is provided
-            if (!value) {
-              setFormErrors({
-                ...formErrors,
-                dateOfBirth: 'Date of birth is required',
-              });
-              break;
-            }
-            // Calculate the user's age based on the provided date of birth
-            const dob = new Date(value);
-            const today = new Date();
-            let age = today.getFullYear() - dob.getFullYear();
-            // Adjust age if the user's birthday hasn't occurred yet this year
-            if (
-              dob.getMonth() > today.getMonth() ||
-              (dob.getMonth() === today.getMonth() && dob.getDate() > today.getDate())
-            ) {
-              age--;
-            }
-            // Check if the user is at least 18 years old
-            if (age < 18) {
-              setFormErrors({
-                ...formErrors,
-                dateOfBirth: 'You must be at least 18 years old',
-              });
-            } else {
-              setFormErrors({
-                ...formErrors,
-                dateOfBirth: '',
-              });
-            }
+        case 'dateOfBirth':
+          // Check if date of birth is provided
+          if (!value) {
+            setFormErrors({
+              ...formErrors,
+              dateOfBirth: 'Date of birth is required',
+            });
             break;
-
+          }
+        
+          // Calculate the user's age based on the provided date of birth
+          const dob = new Date(value);
+          const today = new Date();
+          const age = today.getFullYear() - dob.getFullYear();
+          const monthDiff = today.getMonth() - dob.getMonth();
+          
+          // Check if the user is at least 18 years old
+          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+            age--;
+          }
+        
+          if (age < 18) {
+            setFormErrors({
+              ...formErrors,
+              dateOfBirth: 'You must be at least 18 years old',
+            });
+          } else {
+            setFormErrors({
+              ...formErrors,
+              dateOfBirth: '',
+            });
+          }
+          break;
+        
       default:
         break;
     }
@@ -200,7 +200,7 @@ const RegisterPatient = () => {
   
       // Usage
       const response = await fetch(
-        'https://localhost:7207/api/Patient/CreatePatient',
+        'https://localhost:7190/api/Patient/CreatePatient',
         {
           method: 'POST',
           headers: {

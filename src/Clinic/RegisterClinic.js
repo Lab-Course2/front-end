@@ -90,31 +90,15 @@ const RegisterClinic = () => {
             : 'Password must contain one uppercase letter, one lowercase letter, one digit, one symbol, and must be at least 8 characters long',
         });
         break;
-        case 'phoneNumber':
-          // Check if the phone number is provided
-          if (!value) {
-            setFormErrors({
-              ...formErrors,
-              phoneNumber: 'Phone number is required',
-            });
-            break;
-          }
-        
-          // Check if the phone number contains only numbers or '+'
-          const isValidPhoneNumber = /^\+?\d+$/.test(value);
-          if (!isValidPhoneNumber) {
-            setFormErrors({
-              ...formErrors,
-              phoneNumber: 'Please enter a valid phone number containing only numbers or +',
-            });
-          } else {
-            setFormErrors({
-              ...formErrors,
-              phoneNumber: '',
-            });
-          }
-          break;
-        
+      case 'phoneNumber':
+        const phoneNumberRegex = /^\d+$/;
+        setFormErrors({
+          ...formErrors,
+          phoneNumber: phoneNumberRegex.test(value)
+            ? ''
+            : 'Please enter a valid phone number containing only numbers',
+        });
+        break;
       default:
         break;
     }
