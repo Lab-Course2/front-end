@@ -118,12 +118,12 @@ const RegisterPatient = () => {
             break;
           }
         
-          // Check if the phone number contains only numbers
-          const isValidPhoneNumber = /^\d+$/.test(value);
+          // Check if the phone number contains only numbers or '+'
+          const isValidPhoneNumber = /^\+?\d+$/.test(value);
           if (!isValidPhoneNumber) {
             setFormErrors({
               ...formErrors,
-              phoneNumber: 'Please enter a valid phone number containing only numbers',
+              phoneNumber: 'Please enter a valid phone number containing only numbers or +',
             });
           } else {
             setFormErrors({
@@ -142,12 +142,10 @@ const RegisterPatient = () => {
               });
               break;
             }
-
             // Calculate the user's age based on the provided date of birth
             const dob = new Date(value);
             const today = new Date();
             let age = today.getFullYear() - dob.getFullYear();
-
             // Adjust age if the user's birthday hasn't occurred yet this year
             if (
               dob.getMonth() > today.getMonth() ||
@@ -155,7 +153,6 @@ const RegisterPatient = () => {
             ) {
               age--;
             }
-
             // Check if the user is at least 18 years old
             if (age < 18) {
               setFormErrors({
