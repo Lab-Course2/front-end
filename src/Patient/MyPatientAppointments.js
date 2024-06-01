@@ -1,79 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../Sidebar';
-import MyPendingAppointments from './MyPendingAppointments';
 
 function MyPatientAppointments() {
     const [appointments, setAppointments] = useState([]);
-    const [filteredAppointments, setFilteredAppointments] = useState([]);
     const [appointmentSlots, setAppointmentSlots] = useState({});
     const [doctorData, setDoctorData] = useState({});
-    const [errorMessage, setErrorMessage] = useState(null);
-    const [patientData, setPatientData] = useState({}); // State to store patient data
-    const [searchDate, setSearchDate] = useState('');
-
-    const fetchData = async () => {
-        try {
-            const response = await fetch('https://localhost:7190/api/Appointment', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                const appointmentData = await response.json();
-                setAppointments(appointmentData);
-                setFilteredAppointments(appointmentData);
-                console.log("Data", appointmentData);
-            } else {
-                setErrorMessage('Failed to fetch appointment data');
-            }
-        } catch (error) {
-            console.error('Error during fetching appointment data:', error);
-            setErrorMessage('An error occurred while fetching appointment data');
-        }
-    };
+    const [errors, setErrors] = useState(null);
+    const [userId, setUserId] = useState(''); // Assuming userId is stored somewhere
 
     useEffect(() => {
-        fetchData();
-    }, []);
+        // Fetch user id (assuming it's stored somewhere)
+        const userId = localStorage.getItem('userId');
+        setUserId(userId);
 
-    const cancelAppointment = async (id) => {
-        try {
-            const response = await fetch(`https://localhost:7190/api/Appointment/PatientCancelAppointment?id=${id}`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (response.ok) {
-                const responseData = await response.json();
-                if (responseData.succeeded === true) {
-                    console.log('Operation succeeded: true');
-                    setErrorMessage(null);
-                    console.log(responseData);
-                    fetchData();
-                } else {
-                    console.log('Operation succeeded: false');
-                    setErrorMessage(responseData);
-                    console.log(responseData);
-                }
-            } else {
-                const errorData = await response.json();
-                console.error('Failed to cancel appointment:', errorData.message);
-            }
-        } catch (error) {
-            console.error('Error canceling appointment:', error);
-        }
-    };
-
-    const userId = localStorage.getItem('userId');
-
-    const fetchDoctor = async (doctorId) => {
-        if (!doctorData[doctorId]) {
+        const fetchData = async () => {
             try {
-                const response = await fetch(`https://localhost:7190/api/Doctor/GetDoctorById?doctorId=${doctorId}`, {
+                const response = await fetch('https://localhost:7190/api/BookAppointment', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -81,88 +23,242 @@ function MyPatientAppointments() {
                 });
 
                 if (response.ok) {
-                    const doctor = await response.json();
-                    setDoctorData(prevData => ({ ...prevData, [doctorId]: doctor }));
+                    const appointmentData = await response.json();
+                    setAppointments(appointmentData);
                 } else {
-                    console.error('Failed to fetch doctor data');
-                    setDoctorData(prevData => ({ ...prevData, [doctorId]: { name: 'Unknown', surname: 'Unknown', personalNumber: 'Unknown' } }));
+                    setErrors('Failed to fetch appointment data');
                 }
             } catch (error) {
-                console.error('Error fetching doctor data:', error);
-                setDoctorData(prevData => ({ ...prevData, [doctorId]: { name: 'Unknown', surname: 'Unknown', personalNumber: 'Unknown' } }));
+                console.error('Error during fetching appointment data:', error);
+                setErrors('An error occurred while fetching appointment data');
             }
+        };
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const fetchAppointmentSlots = async () => {
+            try {
+                const response = await fetch('https://localhost:7190/api/AppointmentSlot/', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if (response.ok) {
+                    const slotData = await response.json();
+                    const slots = {};
+                    slotData.forEach(slot => {
+                        slots[slot.appointmentSlotId] = {
+                            ...slot,
+                            doctorId: slot.doctorId // Store DoctorId alongside slot data
+                        };
+                        // Fetch doctor data if not already fetched
+                        if (!doctorData[slot.doctorId]) {
+                            fetchDoctorData(slot.doctorId);
+                        }
+                    });
+                    setAppointmentSlots(slots);
+                } else {
+                    setErrors('Failed to fetch appointment slots');
+                }
+            } catch (error) {
+                console.error('Error during fetching appointment slots:', error);
+                setErrors('An error occurred while fetching appointment slots');
+            }
+        };
+        fetchAppointmentSlots();
+    }, []);
+
+    const fetchDoctorData = async (doctorId) => {
+        try {
+            const response = await fetch(`https://localhost:7190/api/Doctor/GetDoctorById?doctorId=${doctorId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const doctor = await response.json();
+                setDoctorData((prevData) => ({
+                    ...prevData,
+                    [doctorId]: doctor,
+                }));
+            } else {
+                setErrors('Failed to fetch doctor data');
+            }
+        } catch (error) {
+            console.error('Error during fetching doctor data:', error);
+            setErrors('An error occurred while fetching doctor data');
+        }
+    };
+    const deleteAppointment = async (appointmentId) => {
+        try {
+            const response = await fetch(`https://localhost:7190/api/BookAppointment/${appointmentId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                // If deletion is successful, update the appointments state
+                setAppointments(prevAppointments =>
+                    prevAppointments.filter(appointment => appointment.bookAppointmentId !== appointmentId)
+                );
+            } else {
+                setErrors('Failed to cancel appointment');
+            }
+        } catch (error) {
+            console.error('Error during canceling appointment:', error);
+            setErrors('An error occurred while canceling appointment');
         }
     };
 
-    useEffect(() => {
-        appointments.forEach(appointment => {
-            const doctorId = appointment.appointmentSlot.doctorId;
-            fetchDoctor(doctorId);
-        });
-    }, [appointments]);
+    const myPatientAppointments = appointments.filter(appointment =>
+        appointmentSlots[appointment.appointmentSlotId] &&
+        appointmentSlots[appointment.appointmentSlotId].patientId === userId &&
+        appointment.isAccepted === true
+    );
+    
+    const myPatientRequestAppointments = appointments.filter(appointment =>
+        appointmentSlots[appointment.appointmentSlotId] &&
+        appointmentSlots[appointment.appointmentSlotId].patientId === userId &&
+        appointment.isAccepted === false
+    );
 
-    useEffect(() => {
-        setFilteredAppointments(
-            appointments.filter(
-                appointment => 
-                    appointment.bookAppointment.patientId === userId &&
-                    appointment.appointmentSlot.date.includes(searchDate)
-            )
-        );
-    }, [userId, searchDate, appointments]);
-
-    const handleSearchChange = (event) => {
-        setSearchDate(event.target.value);
+    const cancelAppointmentFromPatient = async (appointmentId) => {
+        try {
+            const response = await fetch(`https://localhost:7190/api/BookAppointment/cancel-from-patient/${appointmentId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.ok) {
+                const responseData = await response.json();
+                console.log(responseData.message); // Log success message
+                // Handle any additional logic after successful cancelation
+            } else {
+                const errorData = await response.json();
+                console.error('Failed to cancel appointment:', errorData.message);
+                // Handle error case
+            }
+        } catch (error) {
+            console.error('Error canceling appointment:', error);
+            // Handle network error
+        }
     };
-
-    const isFutureDate = (date) => {
-        const today = new Date();
-        const appointmentDate = new Date(date);
-        return appointmentDate > today;
-    };    
     
     return (
         <div className="col-py-9">
             <div className="row-md-1">
                 <Sidebar userRole='Patient' />
             </div>
-            <MyPendingAppointments/>
             <div className="row-md-5 d-flex justify-content-center">
                 <div className="w-75" >
                     <div className="my-5">
-                        <h3>My Appointments</h3>
-                        <input type="date" className="form-control" placeholder="Search by Date" value={searchDate} onChange={handleSearchChange} />
+                        <h3>My Pending Appointment Requests</h3>    
                     </div>
-                    {errorMessage && <div className="alert alert-danger">{errorMessage}</div>}
-                    <div className="table-responsive">
+                    {errors && <div className="alert alert-danger">{errors}</div>}
+                    <div class="table-responsive">
                         <table className="table table-striped">
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
                                     <th scope="col">Date</th>
                                     <th scope="col">Start Time - End Time</th>
-                                    <th scope="col">DoctorId</th>
+                                    <th scope="col">Doctor</th>
                                     <th scope="col">Meeting Reason</th>
-                                    <th scope="col">Meeting Request Description</th>
+                                    <th scope="col">Meeting Request Desc.</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {myPatientRequestAppointments.map((appointment, index) => (
+                                    <tr key={appointment.bookAppointmentId}>
+                                        <th scope="row">{index + 1}</th>
+                                        <td>
+                                            {appointmentSlots[appointment.appointmentSlotId] ? 
+                                                appointmentSlots[appointment.appointmentSlotId].date : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>
+                                            {appointmentSlots[appointment.appointmentSlotId] ? 
+                                                `${appointmentSlots[appointment.appointmentSlotId].startTime} - ${appointmentSlots[appointment.appointmentSlotId].endTime}` : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>
+                                        {doctorData[appointmentSlots[appointment.appointmentSlotId].doctorId] ? 
+                                                `${doctorData[appointmentSlots[appointment.appointmentSlotId].doctorId].name} ${doctorData[appointmentSlots[appointment.appointmentSlotId].doctorId].surname}` : 
+                                                'Fetching...'
+                                        }
+                                        </td>
+                                        <td>{appointment.meetingReason}</td>
+                                        <td>{appointment.meetingRequestDescription}</td>
+                                        <td>
+                                            <button onClick={() => deleteAppointment(appointment.bookAppointmentId)} className="btn btn-danger">Cancel Appointment</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div className="row-md-5 d-flex justify-content-center">
+                <div className="w-75" >
+                    <div className="my-5">
+                        <h3>My Accepted Appointments</h3>    
+                    </div>
+                    {errors && <div className="alert alert-danger">{errors}</div>}
+                    <div class="table-responsive">
+                        <table className="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Start Time - End Time</th>
+                                    <th scope="col">Doctor</th>
+                                    <th scope="col">Meeting Reason</th>
+                                    <th scope="col">Meeting Request Desc.</th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredAppointments.map((appointment, index) => (
-                                    <tr key={index}>
+                                {myPatientAppointments.map((appointment, index) => (
+                                    <tr key={appointment.bookAppointmentId}>
                                         <th scope="row">{index + 1}</th>
-                                        <td>{appointment.appointmentSlot.date}</td>
-                                        <td>{appointment.appointmentSlot.startTime} - {appointment.appointmentSlot.endTime}</td>
-                                        <td>{doctorData[appointment.appointmentSlot.doctorId] ?
-                                            `${doctorData[appointment.appointmentSlot.doctorId].name} ${doctorData[appointment.appointmentSlot.doctorId].surname} (${doctorData[appointment.appointmentSlot.doctorId].personalNumber})` : 'Unknown'}
+                                        <td>
+                                            {appointmentSlots[appointment.appointmentSlotId] ? 
+                                                appointmentSlots[appointment.appointmentSlotId].date : 
+                                                'Fetching...'
+                                            }
                                         </td>
-                                        <td>{appointment.bookAppointment.meetingReason}</td>
-                                        <td>{appointment.bookAppointment.meetingRequestDescription}</td>
-                                        <td>{appointment.status}</td>
-                                        {appointment.status === "Accepted" && isFutureDate(appointment.appointmentSlot.date) && (
+                                        <td>
+                                            {appointmentSlots[appointment.appointmentSlotId] ? 
+                                                `${appointmentSlots[appointment.appointmentSlotId].startTime} - ${appointmentSlots[appointment.appointmentSlotId].endTime}` : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>
+                                            {doctorData[appointmentSlots[appointment.appointmentSlotId].doctorId] ? 
+                                                `${doctorData[appointmentSlots[appointment.appointmentSlotId].doctorId].name} ${doctorData[appointmentSlots[appointment.appointmentSlotId].doctorId].surname}` : 
+                                                'Fetching...'
+                                            }
+                                        </td>
+                                        <td>{appointment.meetingReason}</td>
+                                        <td>{appointment.meetingRequestDescription}</td>
+                                        <td>{appointment.isCanceled ? 'CANCELED':'Ongoing'}</td>
+                                        {!appointment.isCanceled && (
                                             <td>
-                                                <button className="btn btn-danger btn-sm" onClick={() => cancelAppointment(appointment.appointmentId)}>Cancel Appointment</button>
+                                                <button className="btn btn-danger btn-sm" onClick={() => cancelAppointmentFromPatient(appointment.bookAppointmentId)} >Cancel Appointment</button>
                                             </td>
                                         )}
                                     </tr>

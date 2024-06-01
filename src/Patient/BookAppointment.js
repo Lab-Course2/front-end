@@ -3,7 +3,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import moment from 'moment';
 import { Button, Container, Row, Col, Form } from 'react-bootstrap';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import MessageComponent from '../Messages/MessageComponent';
 
 const BookAppointment = (userId) => {
@@ -14,7 +14,7 @@ const BookAppointment = (userId) => {
   const [selectedAppointmentSlotId, setSelectedAppointmentSlotId] = useState('');
   const [meetingReason, setMeetingReason] = useState('');
   const [meetingRequestDescription, setMeetingRequestDescription] = useState('');
-  const [bookAppointmentStatus, setBookAppointmentStatus] = useState('');
+  const [isAccepted, setIsAccepted] = useState(false);
   const [responseDateTime, setResponseDateTime] = useState(null);
   const [isBookingInProgress, setIsBookingInProgress] = useState(false);
   const [errorMessage, setErrorMessage]=useState(null);
@@ -56,10 +56,10 @@ const bookAppointment = async () => {
           patientId: UserId,
           meetingReason,
           meetingRequestDescription,
-          bookAppointmentStatus:'Pending',
+          isAccepted,
           responseDateTime
       };
-      
+
       // Create appointment
       const response = await fetch('https://localhost:7190/api/BookAppointment/CreateBookAppointment', {
           method: 'POST',
@@ -103,9 +103,9 @@ useEffect(() => {
     } catch (error) {
       console.error('Error fetching doctor details:', error);
     }
-  };
+ };
 
-  fetchDoctorDetails();
+    fetchDoctorDetails();
 }, [doctorId]);
 const fetchDoctorById = async (doctorId) => {
   try {
@@ -122,13 +122,9 @@ const fetchDoctorById = async (doctorId) => {
   return null; // In case of error, return null
 };
 
-const Payment = () => {
-  window.location.href = '/stripe-payment-form';
-}
-
 return (
   <Container>
-      <Row className="align-items-center" style={{display:'flex', justifyContent:'center', marginTop:'-7%'}}>
+      <Row className="align-items-center" style={{display:'flex', justifyContent:'center'}}>
         <Col md={4} className="text-center" style={{width:'15%'}}>
           {doctorDetails && doctorDetails.photoFormat && doctorDetails.photoData && (
             <img 
@@ -176,16 +172,15 @@ return (
             <Form.Control as="textarea" rows={3} placeholder="Enter meeting request description" value={meetingRequestDescription} onChange={(e) => setMeetingRequestDescription(e.target.value)} />
           </Form.Group>
           <Button variant="primary" onClick={bookAppointment} disabled={!selectedAppointmentSlotId || isBookingInProgress}>
-            {isBookingInProgress ? 'Booking...' : 'Proceed to Pay '}
+            {isBookingInProgress ? 'Booking...' : 'Book Appointment'}
           </Button>
-         <Link to={'/checkout-form'}>
-         <button >Proceed to Pay</button>
-         </Link> 
         </Form>
       </Col>
     </Row>
   </Container>
 );
+
+
 };
 
 export default BookAppointment;
