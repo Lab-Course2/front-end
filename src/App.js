@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate   } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import { Stack } from 'react-bootstrap';
 import Navbar from './Navbar';
 import RegisterPatient from './Patient/RegisterPatient';
@@ -14,7 +14,6 @@ import PatientDashboard from './Patient/PatientDashboard';
 import Homepage from './Homepage';
 import Footer from './Footer';
 import ResetPassword from './ResetPasswordComponent';
-import { createBrowserHistory } from 'history';
 import SearchList from './Search';
 import UserProfileCard from './DoctorProfileView';
 import UnauthorizedPage from './UnauthorizedPage';
@@ -28,15 +27,11 @@ import BookAppointmentRequests from './Doctor/BookAppointmentRequests';
 import MyPatientAppointments from './Patient/MyPatientAppointments';
 import MySchedule from './Doctor/MySchedule';
 import ChatApp from './Chat/ChatComponent';
-import useSignalRHub from './SignalR/SignalRComponent'; 
+import useSignalRHub from './SiganlR/SignalRComponent';
 import UserList from './ConnectionList';
-import FriendList from './FriendList';
+import FriendList from './FirendsList';
 import ProfilePage from './Patient/PatientProfile';
-import NotificationService from './SignalR/NotificationSender';
-
-const PrivateRoute = ({ element: Element, isLoggedIn, ...rest }) => (
-  isLoggedIn ? <Route {...rest} element={<Element />} /> : <Navigate to="/" />
-);
+import NotificationService from './SiganlR/NotificationSender';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,8 +39,6 @@ const App = () => {
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState('');
   const signalRHub = useSignalRHub('https://localhost:7207/chathub');
-
-const history = createBrowserHistory();
 
   const handleLogin = (role, token, userId) => {
     setIsLoggedIn(true);
@@ -55,15 +48,11 @@ const history = createBrowserHistory();
     const userData = { isLoggedIn: true, userRole: role, token, userId };
     sessionStorage.setItem('userData', JSON.stringify(userData));
 
-    if(role === 'Patient'){
-    history.push('/patient-dashboard');
-    window.location.reload();
-    }else if(role === 'Clinic'){
-      history.push('/clinic-dashboard');
-    window.location.reload();
-
+    if (role === 'Patient') {
+      window.location.href = '/patient-dashboard';
+    } else if (role === 'Clinic') {
+      window.location.href = '/clinic-dashboard';
     }
-
   };
 
   const handleLogout = () => {
@@ -71,9 +60,7 @@ const history = createBrowserHistory();
     setUserRole('');
     setUserId('');
     sessionStorage.removeItem('userData');
-    history.push('/login');
-    window.location.reload();
-
+    window.location.href = '/login';
   };
 
   useEffect(() => {
@@ -84,60 +71,52 @@ const history = createBrowserHistory();
       setUserRole(userRole);
       setToken(token);
       setUserId(userId);
-
-
     }
   }, []);
 
-  
-
   return (
     <Stack direction="vertical">
-      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} signalR={signalRHub}/>
-      <Router history={history}>
+      <Navbar isLoggedIn={isLoggedIn} handleLogout={handleLogout} signalR={signalRHub} />
+      <Router>
         <Routes>
           {isLoggedIn ? (
             <>
-           {userRole === "Clinic" && (
-            <>
-              <Route path="/clinic-dashboard" element={<ClinicDashboard />} />
-              <Route path="/edit-doctor/:id" element={<EditDoctor />} />
-              <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
-              <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
-              <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
-              <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
-              <Route path="/appointment-slot-create" element={<AppointmentSlotCreate userId={userId} />} />
-              <Route path="/appointment-slot-create-by-weeks" element={<AppointmentSlotCreateByWeeks userId={userId} />} />
-            </>
-          )}
-          {userRole === "Patient" && (
-            <>
-              <Route path="/patient-dashboard" element={<PatientDashboard />} />
-              <Route path="/search-list" element={<SearchList />} />
-              <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
-              <Route path="/appointment-slot-list-for-patient/:doctorId" element={<AppointmentSlotListForPatient userId={userId} />} />
-              <Route path="/book-appointment/:doctorId" element={<BookAppointment userId={userId} />} />
-              <Route path="/my-patient-appointments" element={<MyPatientAppointments userId={userId} />} />
-              <Route path="/chat" element={<ChatApp  signalrConnection={signalRHub} /> } />
-              <Route path="/chat/:personId" element={<ChatApp  signalrConnection={signalRHub}/>} />
-              <Route path="/profile" element={<ProfileSettings patientId={userId} />} />
-
-
-            </>
-          )}
-          {userRole === "Doctor" && (
-            <>
-              <Route path="/book-appointment-requests" element={<BookAppointmentRequests userId={userId} />} />
-              <Route path="/my-schedule" element={<MySchedule userId={userId} />} />
-              <Route path="/chat" element={<ChatApp  signalrConnection={signalRHub}/>} />
-              <Route path="/chat/:personId" element={<ChatApp  signalrConnection={signalRHub}/>} />
-
-
-            </>
-          )}
+              {userRole === "Clinic" && (
+                <>
+                  <Route path="/clinic-dashboard" element={<ClinicDashboard />} />
+                  <Route path="/edit-doctor/:id" element={<EditDoctor />} />
+                  <Route path="/clinic-profile" element={<ClinicProfile userId={userId} />} />
+                  <Route path="/create-doctor" element={<CreateDoctor userId={userId} />} />
+                  <Route path="/doctor-list" element={<DoctorList userId={userId} />} />
+                  <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
+                  <Route path="/appointment-slot-create" element={<AppointmentSlotCreate userId={userId} />} />
+                  <Route path="/appointment-slot-create-by-weeks" element={<AppointmentSlotCreateByWeeks userId={userId} />} />
+                </>
+              )}
+              {userRole === "Patient" && (
+                <>
+                  <Route path="/patient-dashboard" element={<PatientDashboard />} />
+                  <Route path="/search-list" element={<SearchList />} />
+                  <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
+                  <Route path="/appointment-slot-list-for-patient/:doctorId" element={<AppointmentSlotListForPatient userId={userId} />} />
+                  <Route path="/book-appointment/:doctorId" element={<BookAppointment userId={userId} />} />
+                  <Route path="/my-patient-appointments" element={<MyPatientAppointments userId={userId} />} />
+                  <Route path="/chat" element={<ChatApp signalrConnection={signalRHub} />} />
+                  <Route path="/chat/:personId" element={<ChatApp signalrConnection={signalRHub} />} />
+                  <Route path="/profile" element={<ProfileSettings patientId={userId} />} />
+                </>
+              )}
+              {userRole === "Doctor" && (
+                <>
+                  <Route path="/book-appointment-requests" element={<BookAppointmentRequests userId={userId} />} />
+                  <Route path="/my-schedule" element={<MySchedule userId={userId} />} />
+                  <Route path="/chat" element={<ChatApp signalrConnection={signalRHub} />} />
+                  <Route path="/chat/:personId" element={<ChatApp signalrConnection={signalRHub} />} />
+                </>
+              )}
               <Route path="/user-profile/:userId" element={<ProfilePage signalRHub={signalRHub} />} />
               <Route path="/profile-card/:userId" element={<UserProfileCard />} />
-              <Route path="/user-list" element={<FriendList signalRHub={signalRHub}/>} />
+              <Route path="/user-list" element={<FriendList signalRHub={signalRHub} />} />
             </>
           ) : (
             <>
@@ -146,16 +125,12 @@ const history = createBrowserHistory();
               <Route path="/register-clinic" element={<RegisterClinic />} />
               <Route path="/home" element={<Homepage />} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
-              <Route element={<Navigate to="/login" />} />
-              <Route path="/" element={<Navigate to="/home" />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
-
+              <Route path="/" element={<Navigate to="/home" />} />
+              <Route path="/*" element={<UnauthorizedPage />} />
             </>
-            
           )}
-            <Route path="/*" element={isLoggedIn ? <Navigate to="/home" /> : <UnauthorizedPage />} />
         </Routes>
-
       </Router>
       <div className="static-content" style={{ width: '100%', overflowX: 'hidden' }}>
         <Footer />

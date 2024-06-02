@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Container, Row, Col, ListGroup, Image, InputGroup, Button } from 'react-bootstrap';
-import useSignalRHub from '../SignalR/SignalRComponent'; 
+import useSignalRHub from '../SiganlR/SignalRComponent'; 
 import { Spinner } from 'react-bootstrap';
 import Sidebar from '../Sidebar';
 import { useParams,Link } from 'react-router-dom';
@@ -125,18 +125,18 @@ function ChatApp({signalrConnection}) {
         };
         setMessages(prevMessages => [...prevMessages, newMessage]);
       };
-
+  
       const handleTypingStatus = (typingStatus) => {
         console.log(typingStatus);
         SetTyping(typingStatus);
       };
-
+  
       // Subscribe to "ReceiveMessage" event
       signalrConnection.on("ReceiveMessage", handleMessageReceived);
-
+      
       // Subscribe to "SetIsTyping" event
       signalrConnection.on("SetIsTyping", handleTypingStatus);
-
+  
       // Clean up subscriptions when component unmounts or signalrConnection changes
       return () => {
         signalrConnection.off("ReceiveMessage", handleMessageReceived);
@@ -144,7 +144,7 @@ function ChatApp({signalrConnection}) {
       };
     }
   }, [signalrConnection]);
-
+  
   useEffect(() => {
     if (selectedUser) {
       GetMessages();
@@ -165,11 +165,11 @@ function ChatApp({signalrConnection}) {
             const response = await fetchData.json();
             setFriends(response);
         }
-
+        
     } catch (error) {
         console.log("Error: ",error);
     }
-
+    
     }
     userFriendList();
   },[])
@@ -189,14 +189,14 @@ function ChatApp({signalrConnection}) {
           SetNullValue(true);
           noDataSet(true);
         }
-
+        
         const formattedMessages = data.map(message => {
           const dateObject = new Date(message.timestamp);
-
+  
           const time = `${dateObject.getHours()}:${String(dateObject.getMinutes()).padStart(2, '0')}`;
-
+  
           const date = `${dateObject.getDate()}-${dateObject.getMonth() + 1}-${dateObject.getFullYear()}`;
-
+  
           return {
             text: message.content,
             user: message.sender,
@@ -216,7 +216,7 @@ function ChatApp({signalrConnection}) {
       console.error('Error fetching messages:', error);
     }
   };
-
+  
   const handleInputChange = async (e) => {
     setInputText(e.target.value);
     if ( e.target.value.trim() !== '') {
@@ -284,7 +284,7 @@ const handleSearching = (value) => {
               <Sidebar userRole='Patient' />
 
       <Row >
-
+       
         <Col md={4}>
           <div className="card">
             <div className="card-body">
@@ -315,7 +315,7 @@ const handleSearching = (value) => {
            <div id="messageContainer" 
            className="row h-100 w-100" style={{ maxHeight: '100%', overflowY: 'scroll',minHeight:'100%' }}
           >
-
+            
               <MessageList messages={messages} currentUser={selectedUser} datalength={noData}/>
               {isTyping && (
     <div
@@ -336,7 +336,7 @@ const handleSearching = (value) => {
   )}
            </div>
            <div className="row w-100">
-
+           
              <div className="card-footer">
                <InputGroup>
                  <input
@@ -351,7 +351,7 @@ const handleSearching = (value) => {
              </div>
            </div>
          </div>
-
+         
           )}
         </Col>
       </Row>

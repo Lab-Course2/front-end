@@ -46,7 +46,7 @@ const AppointmentSlotList = (userId) => {
 
   const fetchAppointmentSlots = async () => {
     try {
-      const response = await fetch(`https://localhost:5179/api/AppointmentSlot/GetMyDoctorsAppointmentSlots?clinicID=${UserId}`);
+      const response = await fetch(`https://localhost:7190/api/AppointmentSlot/GetMyDoctorsAppointmentSlots?clinicID=${UserId}`);
       if (response.ok) {
         const data = await response.json();
         setAppointmentSlots(data);
@@ -61,7 +61,7 @@ const AppointmentSlotList = (userId) => {
 
   const fetchClinicDoctors = async () => {
     try {
-      const response = await fetch(`https://localhost:5179/api/Doctor/clinic/${UserId}`);
+      const response = await fetch(`https://localhost:7190/api/Doctor/clinic/${UserId}`);
       if (response.ok) {
         const data = await response.json();
         setClinicDoctors(data);
@@ -76,7 +76,7 @@ const AppointmentSlotList = (userId) => {
 
   const fetchDoctorById = async (doctorId) => {
     try {
-      const response = await fetch(`https://localhost:5179/api/Doctor/GetDoctorById?doctorId=${doctorId}`);
+      const response = await fetch(`https://localhost:7190/api/Doctor/GetDoctorById?doctorId=${doctorId}`);
       if (response.ok) {
         const data = await response.json();
         return data;
@@ -104,7 +104,7 @@ const AppointmentSlotList = (userId) => {
   
   const handleDeleteAppointmentSlot = async (appointmentSlotId) => {
     try {
-      const response = await fetch(`https://localhost:5179/api/AppointmentSlot/${appointmentSlotId}`, {
+      const response = await fetch(`https://localhost:7190/api/AppointmentSlot/${appointmentSlotId}`, {
         method: 'DELETE',
       });
       if (response.ok) {
@@ -150,7 +150,7 @@ const AppointmentSlotList = (userId) => {
     patientId: appointmentSlotToUpdate.patientId
     };
     try {
-      const response = await fetch(`https://localhost:5179/api/AppointmentSlot/${appointmentSlotToUpdate.appointmentSlotId}`, {
+      const response = await fetch(`https://localhost:7190/api/AppointmentSlot/${appointmentSlotToUpdate.appointmentSlotId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

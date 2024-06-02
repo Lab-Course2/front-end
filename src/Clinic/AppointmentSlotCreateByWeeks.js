@@ -20,7 +20,7 @@ const AppointmentSlotCreateByWeeks = (userId) => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await fetch(`https://localhost:5179/api/Doctor/clinic/${UserId}`);
+        const response = await fetch(`https://localhost:7190/api/Doctor/clinic/${UserId}`);
         if (response.ok) {
           const data = await response.json();
           setDoctors(data);
@@ -74,7 +74,7 @@ const AppointmentSlotCreateByWeeks = (userId) => {
     try {
       console.log('Request Data:', requestData); // Log the request data for debugging
       const queryParams = new URLSearchParams({ numberOfWeeks: requestData.numberOfWeeks }).toString();
-      const url = `https://localhost:5179/api/AppointmentSlot/CreateByWeeks?${queryParams}`;
+      const url = `https://localhost:7190/api/AppointmentSlot/CreateByWeeks?${queryParams}`;
   
       const response = await fetch(url, {
         method: 'POST',

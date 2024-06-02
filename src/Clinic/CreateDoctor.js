@@ -4,9 +4,9 @@ import '../Css/CreateDoctor.css';
 import Sidebar from '../Sidebar';
 import MessageComponent from '../Messages/MessageComponent'; // Import MessageComponent
 
-const CreateDoctor = (userId) => {
+const CreateDoctor = ({ userId }) => {
   const [doctors, setDoctors] = useState([]);
-  const actualUserId = userId.userId;
+  const actualUserId = userId; // Update to use the userId directly
   const [newDoctor, setNewDoctor] = useState({
     userName: '',
     name: '',
@@ -37,7 +37,7 @@ const CreateDoctor = (userId) => {
     address: '',
     description: '',
   });
-  const [errorMessage, setErrorMessage] = useState(null); 
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     fetchDoctors();
@@ -64,10 +64,10 @@ const CreateDoctor = (userId) => {
       [name]: value,
     });
 
-    validateField(name, value);
+    validateField(name, value); // Call validateField function
   };
 
-  const validateField = (fieldName, value) => {
+  const updateFormErrors = (fieldName, value) => {
     switch (fieldName) {
       case 'userName':
       case 'name':
@@ -76,59 +76,52 @@ const CreateDoctor = (userId) => {
       case 'specialisation':
       case 'description':
       case 'gender':
-        setFormErrors({
+        return {
           ...formErrors,
           [fieldName]: value ? '' : 'This field is required',
-        });
-        break;
+        };
       case 'personalNumber':
       case 'phoneNumber':
-        setFormErrors({
+        return {
           ...formErrors,
           [fieldName]: /^\d+$/.test(value) ? '' : 'Please enter a valid number',
-        });
-        break;
+        };
       case 'email':
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        setFormErrors({
+        return {
           ...formErrors,
           email: emailRegex.test(value) ? '' : 'Please enter a valid email address',
-        });
-        break;
+        };
       case 'password':
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-        setFormErrors({
+        return {
           ...formErrors,
           password: passwordRegex.test(value)
             ? ''
             : 'Password must contain one uppercase letter, one lowercase letter, one digit, one symbol, and must be at least 8 characters long',
-        });
-        break;
+        };
       case 'dateOfBirth':
         const dob = new Date(value);
         const today = new Date();
         const age = today.getFullYear() - dob.getFullYear();
         const monthDiff = today.getMonth() - dob.getMonth();
-
-        // Check if the user is at least 18 years old
         if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
           age--;
         }
-        if (age < 21) {
-          setFormErrors({
-            ...formErrors,
-            dateOfBirth: 'You must be at least 21 years old',
-          });
-        } else {
-          setFormErrors({
-            ...formErrors,
-            dateOfBirth: '',
-          });
-        }
-        break;
+        return {
+          ...formErrors,
+          dateOfBirth: age < 21 ? 'You must be at least 21 years old' : '',
+        };
       default:
-        break;
+        return formErrors;
     }
+  };
+  
+  
+
+  const validateField = (fieldName, value) => {
+    const updatedFormErrors = updateFormErrors(fieldName, value);
+    setFormErrors(updatedFormErrors);
   };
 
   const handleCreateDoctor = async () => {
