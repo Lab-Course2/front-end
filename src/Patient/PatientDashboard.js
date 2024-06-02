@@ -86,7 +86,7 @@ function PatientDashboard()
                         <Card.Body>
                             <Card.Title className="text-left">Total Appointment</Card.Title>
                             <Card.Text className="text-left">
-                                {dashboardData.totalAppointments}
+                             {dashboardData !== null ? dashboardData.totalAppointments : 0}
                             </Card.Text>
                             <FontAwesomeIcon icon={faCalendarCheck} size="4x" className="text-primary float-right" />
                         </Card.Body>
@@ -97,7 +97,7 @@ function PatientDashboard()
                         <Card.Body>
                             <Card.Title className="text-left">Accepted Appointments</Card.Title>
                             <Card.Text className="text-left">
-                                 {dashboardData.totalCompleted}
+                                 {dashboardData !== null ? dashboardData.totalCompleted : 0}
                             </Card.Text>
                             <FontAwesomeIcon icon={faCheckCircle} size="4x" className="text-success float-right" />
                         </Card.Body>
@@ -108,7 +108,7 @@ function PatientDashboard()
                         <Card.Body>
                             <Card.Title className="text-left">Pending Appointments</Card.Title>
                             <Card.Text className="text-left">
-                                 {dashboardData.totalPending}
+                                 {dashboardData !== null ? dashboardData.totalPending : 0}
                             </Card.Text>
                             <FontAwesomeIcon icon={faClock} size="4x" className="text-warning float-right" />
                         </Card.Body>
@@ -119,7 +119,7 @@ function PatientDashboard()
                         <Card.Body>
                             <Card.Title className="text-left">Free Slots Today</Card.Title>
                             <Card.Text className="text-left">
-                                {dashboardData.totalFreeSlots}
+                                {dashboardData !== null ? dashboardData.totalFreeSlots : 0}
                             </Card.Text>
                             <FontAwesomeIcon icon={faUserClock} size="4x" className="text-info float-right" />
                         </Card.Body>
@@ -143,37 +143,44 @@ function PatientDashboard()
                             </tr>
                         </thead>
                         <tbody>
-                        {dashboardData.tableAppointments.length === 0 ? (
-                            <tr>
-                                <td colSpan="7" className="text-center">
-                                    <div>
-                                        <p>No appointments available.</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        ) : (
-                            dashboardData.tableAppointments.map((appointment, index) => (
-                                <tr key={index}>
-                                <td>{index + 1}</td>
-                                <td>{appointment.result.date}</td>
-                                <td>{appointment.result.startTime} - {appointment.result.endTime}</td>
-                                <td>{appointment.result.doctor}</td>
-                                <td>{appointment.result.meetingreason}</td>
-                                <td>{appointment.result.meetingRequest}</td>
-                                <td style={{ whiteSpace: 'nowrap' }}>
-                                    <Button variant="primary" className="mr-2">
-                                        <FontAwesomeIcon icon={faInfoCircle} /> Details
-                                    </Button>
-                                    <Button variant="danger">
-                                        <FontAwesomeIcon icon={faTimesCircle} /> Cancel
-                                    </Button>
-                                </td>
-                            </tr>
-                            ))
-                        )}
+                            {dashboardData === null ? (
+                                <tr>
+                                    <td colSpan="7" className="text-center">
+                                        <div>
+                                            <p>Loading...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : dashboardData.tableAppointments.length === 0 ? (
+                                <tr>
+                                    <td colSpan="7" className="text-center">
+                                        <div>
+                                            <p>No appointments available.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            ) : (
+                                dashboardData.tableAppointments.map((appointment, index) => (
+                                    <tr key={index}>
+                                        <td>{index + 1}</td>
+                                        <td>{appointment.result.date}</td>
+                                        <td>{appointment.result.startTime} - {appointment.result.endTime}</td>
+                                        <td>{appointment.result.doctor}</td>
+                                        <td>{appointment.result.meetingreason}</td>
+                                        <td>{appointment.result.meetingRequest}</td>
+                                        <td style={{ whiteSpace: 'nowrap' }}>
+                                            <Button variant="primary" className="mr-2">
+                                                <FontAwesomeIcon icon={faInfoCircle} /> Details
+                                            </Button>
+                                            
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
+
                     </Table>
-                    {dashboardData.tableAppointments.length > 4 && (
+                    {dashboardData !== null && dashboardData.tableAppointments.length > 4 && (
                         <div className="text-right">
                             <a href="#">View all your appointments</a>
                         </div>
@@ -187,81 +194,91 @@ function PatientDashboard()
                 {/* Doctors */}
                 <Col>
                     <h2>List of Doctors</h2>
-                    {dashboardData.sugestionDoctors.length > 0 ? (
-                        <div className="d-flex flex-wrap">
-                            {dashboardData.sugestionDoctors.map((doctor, index) => (
-                                <div key={index} className="m-2">
-                                    <Card style={{ width: '18rem' }}>
-                                        <div className="d-flex justify-content-center align-items-center" style={{ width: '150px', height: '150px', overflow: 'hidden', borderRadius: '50%', margin: 'auto' }}>
-                                            <img src={`data:image/${doctor.photoFormat};base64,${doctor.photoData}`} alt="User" className="img-fluid" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                                        </div>
-                                        <Card.Body className="d-flex flex-column align-items-center">
-                                            <Card.Title>{doctor.fullName}</Card.Title>
-                                            <Card.Text>
-                                                Specialization: {doctor.specialisation}
-                                            </Card.Text>
-                                            <div className="d-flex">
-                                                <Link to={`/profile-card/${doctor.doctorId}`}>
-                                                    <Button variant="primary" className="mr-2">
-                                                        <FontAwesomeIcon icon={faEye} /> Profile
-                                                    </Button>
-                                                </Link>
-                                                <Link to={doctor.isFriends ? `/chat/${doctor.doctorId}`:''}>
-                                                    <Button variant="success" onClick={()=> handleToMessage(doctor.isFriends)}>
-                                                        <FontAwesomeIcon icon={faComments} /> Chat
-                                                    </Button>
-                                                </Link>
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </div>
-                            ))}
-                        </div>
+                    {dashboardData === null ? (
+                        // Nëse dashboardData është null
+                        <p>Loading...</p>
                     ) : (
-                        <div>
-                            <p>No data available for doctors.</p>
-                        </div>
+                        dashboardData.sugestionDoctors.length > 0 ? (
+                            <div className="d-flex flex-wrap">
+                                {dashboardData.sugestionDoctors.map((doctor, index) => (
+                                    <div key={index} className="m-2">
+                                        <Card style={{ width: '18rem' }}>
+                                            <div className="d-flex justify-content-center align-items-center" style={{ width: '150px', height: '150px', overflow: 'hidden', borderRadius: '50%', margin: 'auto' }}>
+                                                <img src={`data:image/${doctor.photoFormat};base64,${doctor.photoData}`} alt="User" className="img-fluid" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                            </div>
+                                            <Card.Body className="d-flex flex-column align-items-center">
+                                                <Card.Title>{doctor.fullName}</Card.Title>
+                                                <Card.Text>
+                                                    Specialization: {doctor.specialisation}
+                                                </Card.Text>
+                                                <div className="d-flex">
+                                                    <Link to={`/profile-card/${doctor.doctorId}`}>
+                                                        <Button variant="primary" className="mr-2">
+                                                            <FontAwesomeIcon icon={faEye} /> Profile
+                                                        </Button>
+                                                    </Link>
+                                                    <Link to={doctor.isFriends ? `/chat/${doctor.doctorId}`:''}>
+                                                        <Button variant="success" onClick={()=> handleToMessage(doctor.isFriends)}>
+                                                            <FontAwesomeIcon icon={faComments} /> Chat
+                                                        </Button>
+                                                    </Link>
+                                                </div>
+                                            </Card.Body>
+                                        </Card>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div>
+                                <p>No data available for doctors.</p>
+                            </div>
+                        )
                     )}
                 </Col>
+
 
                 {/* Patients */}
                 <Col>
                     <h2>List of Patients</h2>
-                    {dashboardData.sugestionPatients.length > 0 ? (
-                        <div className="d-flex flex-wrap">
-                            {dashboardData.sugestionPatients.map((patient, index) => (
-                                <div key={index} className="m-2">
-                                    <Card style={{ width: '18rem' }}>
-                                    <div className="d-flex justify-content-center align-items-center" style={{ width: '150px', height: '150px', overflow: 'hidden', borderRadius: '50%', margin: 'auto' }}>
-                                        <img src={`data:image/${patient.photoFormat};base64,${patient.photoData}`} alt="User" className="img-fluid" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-                                    </div>
-                                        <Card.Body className="d-flex flex-column align-items-center">
-                                            <Card.Title>{patient.fullName}</Card.Title>
-                                            <div className="d-flex">
-                                                 <Link to={`/user-profile/${patient.patientId}`}>
-                                                    <Button variant="primary" className="mr-2">
-                                                        <FontAwesomeIcon icon={faEye} /> Profile
-                                                    </Button>
-                                                 </Link>
-                                                 <Link to={patient.isFriends ? `/chat/${patient.patientId}`:''}>
-                                                    <Button variant="success" onClick={()=> handleToMessage(patient.isFriends)}>
-                                                        <FontAwesomeIcon icon={faComments} /> Chat
-                                                    </Button>
-                                                </Link>
-                                               
-                                            </div>
-                                        </Card.Body>
-                                    </Card>
-                                </div>
-                            ))}
-
-                        </div>
+                    {dashboardData === null ? (
+                        // Nëse dashboardData është null
+                        <p>Loading...</p>
                     ) : (
-                        <div>
-                            <p>No data available for patients.</p>
-                        </div>
+                        dashboardData.sugestionPatients.length > 0 ? (
+                            <div className="d-flex flex-wrap">
+                                {dashboardData.sugestionPatients.map((patient, index) => (
+                                    <div key={index} className="m-2">
+                                        <Card style={{ width: '18rem' }}>
+                                            <div className="d-flex justify-content-center align-items-center" style={{ width: '150px', height: '150px', overflow: 'hidden', borderRadius: '50%', margin: 'auto' }}>
+                                                <img src={`data:image/${patient.photoFormat};base64,${patient.photoData}`} alt="User" className="img-fluid" style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'cover', borderRadius: '50%' }} />
+                                            </div>
+                                            <Card.Body className="d-flex flex-column align-items-center">
+                                                <Card.Title>{patient.fullName}</Card.Title>
+                                                <div className="d-flex">
+                                                    <Link to={`/user-profile/${patient.patientId}`}>
+                                                        <Button variant="primary" className="mr-2">
+                                                            <FontAwesomeIcon icon={faEye} /> Profile
+                                                        </Button>
+                                                    </Link>
+                                                    <Link to={patient.isFriends ? `/chat/${patient.patientId}`:''}>
+                                                        <Button variant="success" onClick={()=> handleToMessage(patient.isFriends)}>
+                                                            <FontAwesomeIcon icon={faComments} /> Chat
+                                                        </Button>
+                                                    </Link>
+                                                </div>
+                                            </Card.Body>
+                                        </Card>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div>
+                                <p>No data available for patients.</p>
+                            </div>
+                        )
                     )}
                 </Col>
+
             </Row>
             <Modal show={showModal1} onHide={handleClose}>
         <Modal.Header closeButton>

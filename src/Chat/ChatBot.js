@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Container, Form, Button,Card,Dropdown  } from 'react-bootstrap';
 import { BsFillChatDotsFill } from 'react-icons/bs';
 import { format } from 'date-fns';
-import NotificationService from '../SignalR/NotificationSender';
-import sendNotification from '../SignalR/NotificationSender';
+import NotificationService from '../SiganlR/NotificationSender';
+import sendNotification from '../SiganlR/NotificationSender';
 
 function ChatBot({signalR,navigateToChat}) {
   const [messages, setMessages] = useState([]);
@@ -105,12 +105,12 @@ function ChatBot({signalR,navigateToChat}) {
     e.preventDefault();
     const message = e.target.message.value;
     if (message) {
-
+  
       const currentDate = new Date();
       const time = format(currentDate, 'HH:mm'); 
       const date = format(currentDate, 'dd MMM, yyyy'); 
       setMessages([...messages, { sender: 'You', text: message,time:time,date: date }]);
-
+  
       const chatbotRequest = {
         UserId: localStorage.getItem('userId'), 
         Problem: selectedService || '', 
@@ -118,11 +118,12 @@ function ChatBot({signalR,navigateToChat}) {
         FreeTextQuestion: message
       };
       signalR.invoke('ChatbotServiceResponse', chatbotRequest).catch(err => console.error(err));
-
+  
       e.target.reset();
-
+  
     }
   };
+  
 
   const handleServiceClick = (service) => {
     setSelectedService(service);

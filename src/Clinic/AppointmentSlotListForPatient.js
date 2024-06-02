@@ -34,7 +34,7 @@ const [appointmentSlots, setAppointmentSlots] = useState([]);
 
   const fetchAppointmentSlots = async () => {
     try {
-      const response = await fetch(`https://localhost:5179/api/AppointmentSlot/ByDoctorId?doctorId=${doctorId}`);
+      const response = await fetch(`https://localhost:7190/api/AppointmentSlot/ByDoctorId?doctorId=${doctorId}`);
       if (response.ok) {
         const data = await response.json();
         setAppointmentSlots(data);
@@ -49,7 +49,7 @@ const [appointmentSlots, setAppointmentSlots] = useState([]);
 
   const fetchDoctorById = async (doctorId) => {
     try {
-      const response = await fetch(`https://localhost:5179/api/Doctor/GetDoctorById?doctorId=${doctorId}`);
+      const response = await fetch(`https://localhost:7190/api/Doctor/GetDoctorById?doctorId=${doctorId}`);
       if (response.ok) {
         const data = await response.json();
         return data; // Assuming this returns {name, surname} for the doctor

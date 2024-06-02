@@ -97,7 +97,7 @@ export default function useSignalRHub(hubUrl, options) {
     }
 
     startConnection();
-
+    
 
   }, [hubUrl, optionsRef.current.enabled]);
 

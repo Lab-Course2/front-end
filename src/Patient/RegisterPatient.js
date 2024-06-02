@@ -39,10 +39,11 @@ const RegisterPatient = () => {
   // Handle form field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
+    // Using callback function form of setFormData
+    setFormData(prevState => ({
+      ...prevState,
       [name]: value,
-    });
+    }));
 
     // Validate each field as it's being typed
     validateField(name, value);
