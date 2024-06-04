@@ -49,10 +49,36 @@ const Sidebar = ({ userRole }) => {
             <hr className="bg-primary"></hr>
           </div>
 
+          {userRole === 'Admin' && (
+          <>
+           <div className="list-group mt-3">
+               <Link to="/admin-dashboard" className={`list-group-item py-2 ${location.pathname === '/admin-dashboard' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+                    <i className="bi bi-house fs-4 me-2"></i>
+                    <span>Dashboard</span>
+                </Link>
+                <Link to="/clinics" className={`list-group-item py-2 ${location.pathname === '/clinics' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+                    <i className="bi bi-house fs-4 me-2"></i>
+                    <span>Clinics</span>
+                </Link>
+                <Link to="/doctors" className={`list-group-item py-2 ${location.pathname === '/doctors' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+                    <i className="bi bi-house fs-4 me-2"></i>
+                    <span>Doctors</span>
+                </Link>
+                <Link to="/patients" className={`list-group-item py-2 ${location.pathname === '/patients' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+                    <i className="bi bi-house fs-4 me-2"></i>
+                    <span>Patients</span>
+                </Link>
+                <Link to="/appointments" className={`list-group-item py-2 ${location.pathname === '/appointments' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+                    <i className="bi bi-house fs-4 me-2"></i>
+                    <span>Appointments</span>
+                </Link>
+            </div>
+          </>)}
+
             {userRole === 'Clinic' && (
           <>
            <div className="list-group mt-3">
-               <Link to="/clinci-dashboard" className={`list-group-item py-2 ${location.pathname === '/clinic-dashboard' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
+               <Link to="/clinc-dashboard" className={`list-group-item py-2 ${location.pathname === '/clinic-dashboard' ? 'active' : ''}`} onClick={handleOffCanvasToggle}>
                     <i className="bi bi-house fs-4 me-2"></i>
                     <LuLayoutDashboard className="mr-2"></LuLayoutDashboard>
                     <span>Dashboard</span>

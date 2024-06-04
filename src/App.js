@@ -32,13 +32,24 @@ import UserList from './ConnectionList';
 import FriendList from './FirendsList';
 import ProfilePage from './Patient/PatientProfile';
 import NotificationService from './SiganlR/NotificationSender';
+import AdminDashboard from './Adminn/AdminDashboard';
+import Appointments from './Adminn/Appointments';
+import DoctorDashboard from './Doctor/DoctorDashboard';
+import { createBrowserHistory } from 'history';
+import Clinics from './Adminn/Clinics';
+import ClinicDetails from './Adminn/ClinicDetails';
+import Patients from './Adminn/Patients';
+import Doctors from './Adminn/Doctors';
+
+
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState('');
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState('');
-  const signalRHub = useSignalRHub('https://localhost:7207/chathub');
+  const signalRHub = useSignalRHub('https://localhost:7190/chathub');
+  const history = createBrowserHistory();
 
   const handleLogin = (role, token, userId) => {
     setIsLoggedIn(true);
@@ -48,10 +59,18 @@ const App = () => {
     const userData = { isLoggedIn: true, userRole: role, token, userId };
     sessionStorage.setItem('userData', JSON.stringify(userData));
 
-    if (role === 'Patient') {
-      window.location.href = '/patient-dashboard';
-    } else if (role === 'Clinic') {
-      window.location.href = '/clinic-dashboard';
+    if(role === 'Patient'){
+    history.push('/patient-dashboard');
+    window.location.reload();
+    }else if(role === 'Clinic'){
+      history.push('/clinic-dashboard');
+    window.location.reload();
+    }else if(role === 'Admin'){
+      history.push('/admin-dashboard');
+    window.location.reload();
+    }else if(role === 'Doctor'){
+      history.push('/doctor-dashboard');
+    window.location.reload();
     }
   };
 
@@ -104,15 +123,29 @@ const App = () => {
                   <Route path="/chat" element={<ChatApp signalrConnection={signalRHub} />} />
                   <Route path="/chat/:personId" element={<ChatApp signalrConnection={signalRHub} />} />
                   <Route path="/profile" element={<ProfileSettings patientId={userId} />} />
+                  <Route path="/admin-dashboard" element={<AdminDashboard/>} />
                 </>
               )}
               {userRole === "Doctor" && (
                 <>
                   <Route path="/book-appointment-requests" element={<BookAppointmentRequests userId={userId} />} />
+                  <Route path="/doctor-dashboard" element={<DoctorDashboard/>} />
                   <Route path="/my-schedule" element={<MySchedule userId={userId} />} />
                   <Route path="/chat" element={<ChatApp signalrConnection={signalRHub} />} />
                   <Route path="/chat/:personId" element={<ChatApp signalrConnection={signalRHub} />} />
                 </>
+              )}
+              {userRole === "Admin" && (
+                <>
+                    <Route path="/admin-dashboard" element={<AdminDashboard />} />
+              <Route path="/clinics" element={<Clinics />} />
+              <Route path="/clinic-details/:clinicId" element={<ClinicDetails />} />
+              <Route path="/patients" element={<Patients />} />
+              <Route path="/doctors" element={<Doctors />} />
+              <Route path="/appointments" element={<Appointments />} />
+              <Route path="/chat" element={<ChatApp  signalrConnection={signalRHub} /> } />
+              <Route path="/chat/:personId" element={<ChatApp  signalrConnection={signalRHub}/>} />
+              </>
               )}
               <Route path="/user-profile/:userId" element={<ProfilePage signalRHub={signalRHub} />} />
               <Route path="/profile-card/:userId" element={<UserProfileCard />} />
@@ -124,6 +157,7 @@ const App = () => {
               <Route path="/register-patient" element={<RegisterPatient />} />
               <Route path="/register-clinic" element={<RegisterClinic />} />
               <Route path="/home" element={<Homepage />} />
+              <Route path="/admin-dashboard" element={<AdminDashboard/>} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
               <Route path="/" element={<Navigate to="/home" />} />
