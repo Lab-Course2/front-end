@@ -7,35 +7,37 @@ const stripePromise = loadStripe('pk_test_51Ou9edP1OcrJcfnRPVuImvaSVyz9Ym5yL2eEk
 const CheckoutForm = () => {
   const [paymentIntent, setPaymentIntent] = useState(null);
   const [formData, setFormData] = useState({
-    amount: 1000,
+    amount: 2222,
     currency: 'usd',
     paymentMethodTypes: ['card'],
     paymentMethod: 'pm_card_visa',
-    patientId: '123456789'
+    patientId: 'cus_QEMX8jjv6nK7SC'
   });
 
   const handlePaymentIntent = async () => {
     try {
       // Krijoni një kërkesë për të krijuar një intent pagese në server
-      const response = await fetch('/stripe/create-payment-intent', { // Këtu duhet të jetë '/stripe/create-payment-intent'
+      const response = await fetch('https://localhost:7190/Stripe/create-payment-intent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
-
+  
       if (!response.ok) {
         throw new Error('Kërkesa për krijuar intent pagese dështoi.');
       }
-
+  
       const data = await response.json();
       setPaymentIntent(data.clientSecret);
+      console.log("clientSecret", data.clientSecret);
     } catch (error) {
       console.error('Gabim gjatë krijimit të intentit të pagesës:', error.message);
     }
   };
-
+  
+  
 
   const handleSubmit = async (event) => {
     event.preventDefault();

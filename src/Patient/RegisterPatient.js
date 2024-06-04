@@ -34,16 +34,17 @@ const RegisterPatient = () => {
     phoneNumber: '',
     gender: '',
     dateOfBirth: '',
+    PhotoData: '', // Add this field
+    PhotoFormat: '' // Add this field
   });
 
   // Handle form field changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    // Using callback function form of setFormData
-    setFormData(prevState => ({
-      ...prevState,
+    setFormData({
+      ...formData,
       [name]: value,
-    }));
+    });
 
     // Validate each field as it's being typed
     validateField(name, value);
@@ -51,127 +52,73 @@ const RegisterPatient = () => {
 
   // Validate individual form field
   const validateField = (fieldName, value) => {
-    switch (fieldName) {
-      case 'userName':
-      case 'name':
-      case 'surname':
-      case 'address':
-        setFormErrors({
-          ...formErrors,
-          [fieldName]: value ? '' : 'This field is required',
-        });
-        break;
-      case 'email':
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        setFormErrors({
-          ...formErrors,
-          email: emailRegex.test(value)
+    setFormErrors((prevErrors) => {
+      let newErrors = { ...prevErrors };
+  
+      switch (fieldName) {
+        case 'userName':
+        case 'name':
+        case 'surname':
+        case 'address':
+          newErrors[fieldName] = value ? '' : 'This field is required';
+          break;
+        case 'email':
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+          newErrors.email = emailRegex.test(value)
             ? ''
-            : 'Please enter a valid email address (e.g., example@example.com)',
-        });
-        break;
+            : 'Please enter a valid email address (e.g., example@example.com)';
+          break;
         case 'password':
           const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/;
-          setFormErrors({
-            ...formErrors,
-            password: passwordRegex.test(value)
-              ? ''
-              : 'Password must contain one uppercase letter, one lowercase letter, one digit, one symbol, and must be at least 8 characters long',
-          });
+          newErrors.password = passwordRegex.test(value)
+            ? ''
+            : 'Password must contain one uppercase letter, one lowercase letter, one digit, one symbol, and must be at least 8 characters long';
           break;
-          case 'personalNumber':
-            // Check if the personal number is provided
-            if (!value) {
-              setFormErrors({
-                ...formErrors,
-                personalNumber: 'Personal number is required',
-              });
-              break;
-            }
-            // Check if the personal number contains only numbers
+        case 'personalNumber':
+          if (!value) {
+            newErrors.personalNumber = 'Personal number is required';
+          } else {
             const isValidPersonalNumber = /^\d+$/.test(value);
-            if (!isValidPersonalNumber) {
-              setFormErrors({
-                ...formErrors,
-                personalNumber: 'Please enter a valid personal number containing only numbers',
-              });
-            } else {
-              setFormErrors({
-                ...formErrors,
-                personalNumber: '',
-              });
-            }
-            break;
-          
-      case 'gender':
-        setFormErrors({
-          ...formErrors,
-          [fieldName]: value ? '' : 'This field is required',
-        });
-        break;
+            newErrors.personalNumber = isValidPersonalNumber
+              ? ''
+              : 'Please enter a valid personal number containing only numbers';
+          }
+          break;
+        case 'gender':
+          newErrors[fieldName] = value ? '' : 'This field is required';
+          break;
         case 'phoneNumber':
-          // Check if the phone number is provided
           if (!value) {
-            setFormErrors({
-              ...formErrors,
-              phoneNumber: 'Phone number is required',
-            });
-            break;
-          }
-        
-          // Check if the phone number contains only numbers
-          const isValidPhoneNumber = /^\d+$/.test(value);
-          if (!isValidPhoneNumber) {
-            setFormErrors({
-              ...formErrors,
-              phoneNumber: 'Please enter a valid phone number containing only numbers',
-            });
+            newErrors.phoneNumber = 'Phone number is required';
           } else {
-            setFormErrors({
-              ...formErrors,
-              phoneNumber: '',
-            });
+            const isValidPhoneNumber = /^\d+$/.test(value);
+            newErrors.phoneNumber = isValidPhoneNumber
+              ? ''
+              : 'Please enter a valid phone number containing only numbers';
           }
           break;
-        
         case 'dateOfBirth':
-          // Check if date of birth is provided
           if (!value) {
-            setFormErrors({
-              ...formErrors,
-              dateOfBirth: 'Date of birth is required',
-            });
-            break;
-          }
-        
-          // Calculate the user's age based on the provided date of birth
-          const dob = new Date(value);
-          const today = new Date();
-          const age = today.getFullYear() - dob.getFullYear();
-          const monthDiff = today.getMonth() - dob.getMonth();
-          
-          // Check if the user is at least 18 years old
-          if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
-            age--;
-          }
-        
-          if (age < 18) {
-            setFormErrors({
-              ...formErrors,
-              dateOfBirth: 'You must be at least 18 years old',
-            });
+            newErrors.dateOfBirth = 'Date of birth is required';
           } else {
-            setFormErrors({
-              ...formErrors,
-              dateOfBirth: '',
-            });
+            const dob = new Date(value);
+            const today = new Date();
+            let age = today.getFullYear() - dob.getFullYear();
+            const monthDiff = today.getMonth() - dob.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < dob.getDate())) {
+              age--;
+            }
+            newErrors.dateOfBirth = age < 18 ? 'You must be at least 18 years old' : '';
           }
           break;
-        
-      default:
-        break;
-    }
+        default:
+          break;
+      }
+  
+      return newErrors;
+    });
   };
+  
 
   // Handle form submission
   const handleSubmit = async (e) => {
