@@ -40,6 +40,17 @@ import Clinics from './Adminn/Clinics';
 import ClinicDetails from './Adminn/ClinicDetails';
 import Patients from './Adminn/Patients';
 import Doctors from './Adminn/Doctors';
+import EmployeeList from './Employees/EmployeeList';
+import CreateEmployee from './Employees/CreateEmployee';
+import EditEmployee from './Employees/EditEmployee';
+import DeleteEmployee from './Employees/DeleteEmployee';
+import ContractForm from './Contracts/ContractForm';
+import ContractsList from './Contracts/ContractsList';
+import EmployeeContracts from './Contracts/EmployeeContracts';
+import ContractsToday from './Contracts/ContractsToday';
+
+
+
 
 
 
@@ -110,6 +121,15 @@ const App = () => {
                   <Route path="/appointment-slot-list" element={<AppointmentSlotList userId={userId} />} />
                   <Route path="/appointment-slot-create" element={<AppointmentSlotCreate userId={userId} />} />
                   <Route path="/appointment-slot-create-by-weeks" element={<AppointmentSlotCreateByWeeks userId={userId} />} />
+
+                {/* <Route path="/employee-form" element={<EmployeeForm />} /> */}
+              <Route path="/employees" element={<EmployeeList />} />
+              <Route path="/create-employee" element={<CreateEmployee />} />
+              <Route path="/edit-employee" element={<EditEmployee />} />
+              <Route path="/delete-employee" element={<DeleteEmployee />} />
+              <Route path="/contract-form" element={<ContractForm />} />
+              <Route path="/contracts-list" element={<ContractsList />} />
+        
                 </>
               )}
               {userRole === "Patient" && (
@@ -157,6 +177,13 @@ const App = () => {
               <Route path="/register-patient" element={<RegisterPatient />} />
               <Route path="/register-clinic" element={<RegisterClinic />} />
               <Route path="/home" element={<Homepage />} />
+
+              {/* <Route path="/create-employee" element={<EmployeeForm />} />
+          <Route path="/create-contract" element={<ContractForm />} />
+          <Route path="/employee-list" element={<EmployeeList />} />
+          <Route path="/contract-list" element={<ContractList />} /> */}
+
+   
               <Route path="/admin-dashboard" element={<AdminDashboard/>} />
               <Route path="/reset-password/:token" element={<ResetPassword />} />
               <Route path="/unauthorized" element={<UnauthorizedPage />} />
