@@ -184,64 +184,73 @@ const handleLogoClick = ()=>{
   return (
     <>
     <BootstrapNavbar bg="primary" expand="lg" sticky="top" data-bs-theme="dark">
-      <BootstrapNavbar.Brand href={handleLogoClick()} className="navbar-brand">
-        <span style={{ color: navbarTextColor }} >AppointEase</span>
-      </BootstrapNavbar.Brand>
-      <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
-      <BootstrapNavbar.Collapse id="basic-navbar-nav">
-        <Nav className="ml-auto">
-          {isLoggedIn === false && (
-            <>
-              <Nav.Link href="/home" style={{ color: navbarTextColor }}>Home</Nav.Link>
-              <Nav.Link href="/about-us" style={{ color: navbarTextColor }}>About Us</Nav.Link>
-              <Nav.Link href="/contact-us" style={{ color: navbarTextColor }}>Contact Us</Nav.Link>
-            </>
-          )}
-         
-          {isLoggedIn ? (
-            <>
-             <Nav.Link href="/user-list" style={{ color: navbarTextColor }}><FaUserFriends style={{ fontSize: "30px" }}/></Nav.Link>
-             <Nav.Link className="notification-icon" style={{position:'relative'}} onClick={handleNotificationClick}>
+        <BootstrapNavbar.Brand href={handleLogoClick()} className="navbar-brand">
+          <span style={{ color: navbarTextColor }}>MindMuse</span>
+        </BootstrapNavbar.Brand>
+        <BootstrapNavbar.Toggle aria-controls="basic-navbar-nav" />
+        <BootstrapNavbar.Collapse id="basic-navbar-nav">
+          <Nav className="ml-auto">
+            {isLoggedIn === false && (
+              <>
+                
+
+                <Nav.Link href="/home" style={{ color: navbarTextColor }}>Home</Nav.Link>
+                <Nav.Link href="/about-us" style={{ color: navbarTextColor }}>About Us</Nav.Link>
+                <Nav.Link href="/contact-us" style={{ color: navbarTextColor }}>Contact Us</Nav.Link>
+                
+              </>
+            )}
+
+            {isLoggedIn ? (
+              <>
+                <Nav.Link href="/user-list" style={{ color: navbarTextColor }}><FaUserFriends style={{ fontSize: "30px" }} /></Nav.Link>
+                <Nav.Link className="notification-icon" style={{ position: 'relative' }} onClick={handleNotificationClick}>
+                  {totalUnread !== null && totalUnread > 0 ? (
+                    <IoNotifications style={{ fontSize: "30px", color: '#ffffff', marginRight: '5px' }} />
+                  ) : (
+                    <IoNotificationsOff style={{ fontSize: "30px", color: '#ffffff', marginRight: '5px' }} />
+                  )}
+                  {totalUnread !== null && totalUnread > 0 && (
+                    <Badge pill bg="danger" style={{ position: 'absolute', top: '0', right: '-2px', zIndex: '1' }}>{notifications.length}</Badge>
+                  )}
+                </Nav.Link>
+
+                <NavDropdown align={{ lg: 'end' }} drop='down-centered' title={<IoMdChatbubbles style={{ fontSize: "30px", color: "white" }} />} id="chat-dropdown" >
+                  <NavDropdown.Item href="/chat" style={{ color: '#ffffff' }}>
+                    <IoMdChatbubbles className='mr-2' style={{ fontSize: "25px" }} />
+                    Messages
+                  </NavDropdown.Item>
+                  <NavDropdown.Item href="#" style={{ color: '#ffffff' }} onClick={toggleOffcanvas}>
+                    <HiChatBubbleBottomCenterText className='' style={{ fontSize: "25px" }} />
+                    Chat bot
+                  </NavDropdown.Item>
+                </NavDropdown>
+
+                <NavDropdown align={{ lg: 'end' }} title={<CgProfile style={{ fontSize: "30px", color: '#ffffff' }}></CgProfile>} id="profile-dropdown" >
+                  <NavDropdown.Item href="/profile" style={{ color: '#ffffff' }}>Profile</NavDropdown.Item>
+                  <NavDropdown.Divider />
+                  <NavDropdown.Item onClick={handleLogout} style={{ color: '#ffffff' }}>Log Out</NavDropdown.Item>
+                </NavDropdown>
+                <NavDropdown align={{ lg: 'end' }} title="Crud" id="crud-dropdown">
+                  <NavDropdown.Item href="/create-employee" style={{ color: '#ffffff' }}>Create Employee</NavDropdown.Item>
+                  <NavDropdown.Item href="/employees" style={{ color: '#ffffff' }}>Employee List</NavDropdown.Item>
+                  <NavDropdown.Item href="/contract-form" style={{ color: '#ffffff' }}>Add Contract</NavDropdown.Item>
+                  <NavDropdown.Item href="/contracts-list" style={{ color: '#ffffff' }}>Contract List</NavDropdown.Item>
+                  
+                 
+                </NavDropdown>
              
-            
-              {totalUnread !== null && totalUnread > 0 ? (
-                <IoNotifications style={{ fontSize: "30px", color: '#ffffff', marginRight: '5px' }} />
-              ) : (
-                <IoNotificationsOff style={{ fontSize: "30px", color: '#ffffff', marginRight: '5px' }} />
-              )}
-              {totalUnread !== null && totalUnread > 0 &&(
-                <Badge pill bg="danger" style={{ position: 'absolute', top: '0', right: '-2px', zIndex: '1' }}>{notifications.length}</Badge>
-              ) }
-              </Nav.Link>
-
-              <NavDropdown align={{ lg: 'end' }} drop='down-centered' title={<IoMdChatbubbles style={{ fontSize: "30px",color:"white" }}/>} id="chat-dropdown" >
-                <NavDropdown.Item href="/chat" style={{ color: '#ffffff' }}>
-                  <IoMdChatbubbles className='mr-2' style={{ fontSize: "25px" }}/>
-                  Messages
-                </NavDropdown.Item>
-                <NavDropdown.Item href="#" style={{ color: '#ffffff' }} onClick={toggleOffcanvas}>
-                  <HiChatBubbleBottomCenterText className='' style={{ fontSize: "25px" }}/>
-                  Chat bot
-                </NavDropdown.Item>
-              </NavDropdown>
-
-              <NavDropdown align={{ lg: 'end' }} title={<CgProfile style={{ fontSize: "30px",color: '#ffffff'  }}></CgProfile>} id="profile-dropdown" >
-                <NavDropdown.Item href="/profile" style={{ color: '#ffffff' }}>Profile</NavDropdown.Item>
-                <NavDropdown.Divider />
-                <NavDropdown.Item onClick={handleLogout} style={{ color: '#ffffff' }}>Log Out</NavDropdown.Item>
-              </NavDropdown>
-
-
-            </>
-          ) : (
-            <>
-              <Nav.Link href="/login" style={{ color: navbarTextColor }}>Login</Nav.Link>
-              <Nav.Link href="/register-patient" style={{ color: navbarTextColor }}>Register</Nav.Link>
-            </>
-          )}
-        </Nav>
-      </BootstrapNavbar.Collapse>
-    </BootstrapNavbar>
+              </>
+            ) : (
+              <>
+                <Nav.Link href="/login" style={{ color: navbarTextColor }}>Login</Nav.Link>
+                <Nav.Link href="/register-patient" style={{ color: navbarTextColor }}>Register</Nav.Link>
+                
+              </>
+            )}
+          </Nav>
+        </BootstrapNavbar.Collapse>
+      </BootstrapNavbar>
 
 
      <Offcanvas show={showOffcanvas} onHide={toggleOffcanvas} placement="end">
