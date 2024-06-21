@@ -236,6 +236,7 @@ const handleLogoClick = ()=>{
                   <NavDropdown.Item href="/employees" style={{ color: '#ffffff' }}>Employee List</NavDropdown.Item>
                   <NavDropdown.Item href="/contract-form" style={{ color: '#ffffff' }}>Add Contract</NavDropdown.Item>
                   <NavDropdown.Item href="/contracts-list" style={{ color: '#ffffff' }}>Contract List</NavDropdown.Item>
+                  <NavDropdown.Item href="/planet-form" style={{ color: '#ffffff' }}>Planet From</NavDropdown.Item>
                   
                  
                 </NavDropdown>

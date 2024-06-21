@@ -48,6 +48,9 @@ import ContractForm from './Contracts/ContractForm';
 import ContractsList from './Contracts/ContractsList';
 import EmployeeContracts from './Contracts/EmployeeContracts';
 import ContractsToday from './Contracts/ContractsToday';
+import PlanetForm from './Planet/PlanetForm';
+import PlanetList from './Planet/PlanetList';
+import EditPlanet from './Planet/EditPlanet';
 
 
 
@@ -129,6 +132,9 @@ const App = () => {
               <Route path="/delete-employee" element={<DeleteEmployee />} />
               <Route path="/contract-form" element={<ContractForm />} />
               <Route path="/contracts-list" element={<ContractsList />} />
+              <Route path="/planet-list" element={<PlanetList />} />
+              <Route path="/planet-form" element={<PlanetForm />} />
+              <Route path="/edit-planet" element={<EditPlanet />} />
         
                 </>
               )}
