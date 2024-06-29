@@ -7,7 +7,7 @@ const DeleteContract = ({ contractId, onDeleteSuccess }) => {
     try {
       await axios.delete(`https://localhost:7190/api/Contracts/DeleteContract/${contractId}`);
       console.log('Contract deleted successfully');
-      onDeleteSuccess(); // Call the callback to update the parent component
+      onDeleteSuccess(contractId); // Call the callback to update the parent component
     } catch (error) {
       console.error('Error deleting contract:', error);
     }

@@ -236,8 +236,10 @@ const handleLogoClick = ()=>{
                   <NavDropdown.Item href="/employees" style={{ color: '#ffffff' }}>Employee List</NavDropdown.Item>
                   <NavDropdown.Item href="/contract-form" style={{ color: '#ffffff' }}>Add Contract</NavDropdown.Item>
                   <NavDropdown.Item href="/contracts-list" style={{ color: '#ffffff' }}>Contract List</NavDropdown.Item>
-                  
-                 
+                  <NavDropdown.Item href="/create-planet" style={{ color: '#ffffff' }}>Create Planet</NavDropdown.Item>
+                  <NavDropdown.Item href="/planet-list" style={{ color: '#ffffff' }}>Planet List</NavDropdown.Item>
+                  <NavDropdown.Item href="/satellite-list" style={{ color: '#ffffff' }}>Satellite List</NavDropdown.Item>
+                  <NavDropdown.Item href="/create-satellite" style={{ color: '#ffffff' }}>Create Satellite</NavDropdown.Item>
                 </NavDropdown>
              
               </>
