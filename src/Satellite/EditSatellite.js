@@ -30,7 +30,8 @@ const EditSatellite = ({ satelliteId, onCancel }) => {
   const fetchPlanets = async () => {
     try {
       const response = await axios.get(`https://localhost:7190/api/Planet`);
-      setPlanets(response.data);
+      const filteredPlanets = response.data.filter(planet => !planet.isDeleted); // Filter out deleted planets
+      setPlanets(filteredPlanets);
     } catch (error) {
       console.error('Error fetching planets:', error);
     }

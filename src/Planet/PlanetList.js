@@ -29,10 +29,16 @@ const PlanetList = () => {
     setSelectedPlanet(null);
     fetchPlanets(); // Refresh the planet list
   };
-  const handleDeleteSuccess = (deletedPlanetId) => {
-    const updatedPlanets = planets.filter(planet => planet.id !== deletedPlanetId);
-    setPlanets(updatedPlanets);
+
+  const handleDeleteSuccess = async (deletedPlanetId) => {
+    try {
+      await axios.delete(`https://localhost:7190/api/Planet/DeletePlanet/${deletedPlanetId}`);
+      fetchPlanets(); // Refresh the planet list after deletion
+    } catch (error) {
+      console.error('Error deleting planet:', error);
+    }
   };
+
   return (
     <div>
       <h2>Planet List</h2>
@@ -42,6 +48,7 @@ const PlanetList = () => {
             <th>ID</th>
             <th>Name</th>
             <th>Type</th>
+            <th>Is Deleted</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -51,9 +58,14 @@ const PlanetList = () => {
               <td>{planet.id}</td>
               <td>{planet.name}</td>
               <td>{planet.type}</td>
+              <td>{planet.isDeleted ? 'Yes' : 'No'}</td>
               <td>
-                <Button variant="warning" onClick={() => handleEdit(planet)}>Edit</Button>{' '}
-                <DeletePlanet planetId={planet.id} onDeleteSuccess={handleDeleteSuccess} />
+                {!planet.isDeleted && (
+                  <>
+                    <Button variant="warning" onClick={() => handleEdit(planet)}>Edit</Button>{' '}
+                    <DeletePlanet planet={planet} onDeleteSuccess={handleDeleteSuccess} />
+                  </>
+                )}
               </td>
             </tr>
           ))}

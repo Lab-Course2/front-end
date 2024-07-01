@@ -1,13 +1,12 @@
 import React from 'react';
 import axios from 'axios';
-import Button from 'react-bootstrap/Button'; // Import Button from react-bootstrap
+import Button from 'react-bootstrap/Button';
 
-const DeletePlanet = ({ planetId,onDeleteSuccess }) => {
+const DeletePlanet = ({ planet, onDeleteSuccess }) => {
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`https://localhost:7190/api/Planet/DeletePlanet${planetId}`);
-      console.log('Planet deleted successfully');
-      onDeleteSuccess(planetId);
+      await axios.delete(`https://localhost:7190/api/Planet/DeletePlanet/${planet.id}`);
+      onDeleteSuccess(planet.id); // Notify parent component of successful deletion
     } catch (error) {
       console.error('Error deleting planet:', error);
     }
